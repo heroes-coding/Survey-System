@@ -1,0 +1,18 @@
+@import "./style/variables.scss";
+@import "./containers/survey/survey.scss";
+
+body {
+  background: $Light;
+}
+
+.bannerHolder {
+  width:50%;
+  margin: auto;
+  z-index: 100;
+  float: none;
+}
+
+.banner {
+  max-width:100%;
+  max-height:100%;
+}

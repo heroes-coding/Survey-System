@@ -1,0 +1,61 @@
+@import "../../style/variables.scss";
+
+.surveyHolder {
+  background: $White;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid $Color1;
+  h5 {
+    font-size: 1.4em;
+  }
+}
+
+.surveyTitle {
+  color: $Dark;
+  font-size: 1.8em;
+}
+
+.surveyDescription {
+  font-size: 1.1em;
+  margin: 10px 0;
+}
+
+.categoryHolder {
+  margin: 50px 10px;
+}
+
+.categoryTitle {
+  font-size: 1.2em;
+  margin: 10px 0;
+  Color: $Color1;
+}
+
+.invalid {
+  outline: 1px solid #ff0000 !important;
+}
+
+.questionHolder {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 5px 20px;
+  margin: 10px 0;
+}
+.oddQuestion {
+  background: $Light;
+}
+
+
+.question {
+  min-width: 30%;
+  max-width: 30%;
+  width: 30%;
+}
+
+.answerHeader {
+  font-size: 0.7em;
+  font-weight: bold;
+  margin: 10px -10px -15px 20px;
+  white-space: pre-wrap;
+  text-align: center;
+}

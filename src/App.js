@@ -1,21 +1,40 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios'
+import { connect } from 'react-redux'
+import Survey from './containers/survey/survey'
+import 'font-awesome/css/font-awesome.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import * as styles from './style.css'
 
 class App extends Component {
+  async componentDidMount () {
+    window.axios = axios
+    let result = await axios.get(`http://localhost:5300/test`)
+    console.log({result})
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div className='container-fluid' >
+          <div className="row">
+            <div className="bannerHolder">
+              <img className="banner" src="banner.png" />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-lg-1 col-xl-2"></div>
+            <div className='col-sm-12 col-lg-10 col-xl-8' id="contentHolder">
+              <Survey />
+            <div className="col-lg-1 col-xl-2"></div>
+          </div>
+        </div>
       </div>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state, ownProps, terms) {
+  const { surveyData } = state
+  return { surveyData }
+}
+
+export default connect(mapStateToProps,{})(App)
