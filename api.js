@@ -4,12 +4,13 @@ const fs = require('fs')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const port = 5301;
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-
+app.use(express.static(path.join(__dirname, 'build')));
 app.use(function(req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5301')
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:' + port)
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
   // Request headers you wish to allow
@@ -25,4 +26,8 @@ app.get('/test', async function(req, res) {
   return res.send({HI: "HEY"})
 })
 
-app.listen(5300, () => console.log('Auth server listening on port 5300!'))
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'build/index.html'));
+});
+
+app.listen(port, () => console.log('Auth server listening on port ' + port))

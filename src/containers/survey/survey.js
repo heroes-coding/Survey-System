@@ -28,7 +28,7 @@ class App extends Component {
   }
   async componentDidMount () {
     window.axios = axios
-    let result = await axios.get(`http://localhost:5300/test`)
+    let result = await axios.get(`test`)
   }
   render() {
     const { title, description, categories } = this.props.surveyData
