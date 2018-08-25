@@ -27,8 +27,7 @@ app.get('/test', async function(req, res) {
 })
 
 app.get('*', (req, res) => {
-  res.send({"ANYTHING?":"YUP"})
-  res.sendFile(path.join(__dirname+'build/index.html'));
+  res.sendFile(path.join(__dirname,'build/index.html'));
 });
 
 app.listen(port, () => console.log('Auth server listening on port ' + port))
