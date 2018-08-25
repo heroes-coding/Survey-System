@@ -11,6 +11,7 @@ class App extends Component {
     window.axios = axios
     let result = await axios.get(`/test`)
     console.log({result})
+    
   }
   render() {
     return (
