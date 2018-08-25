@@ -1,0 +1,30 @@
+{
+  "name": "survey",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:5301/",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bootstrap": "^4.1.3",
+    "font-awesome": "^4.7.0",
+    "lodash": "^4.17.10",
+    "node-sass-chokidar": "^1.3.3",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-redux": "^5.0.7",
+    "react-scripts": "1.1.5",
+    "redux": "^4.0.0",
+    "redux-promise": "^0.6.0",
+    "reselect": "^3.0.1"
+  },
+  "scripts": {
+    "client": "set PORT=5300 && yarn dev",
+    "dev": "react-scripts start",
+    "server": "node ../server",
+    "start": "concurrently --kill-others-on-fail \"yarn client\" \"yarn watch-css\" \"yarn server\"",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "build-css": "node-sass-chokidar src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive"
+  }
+}

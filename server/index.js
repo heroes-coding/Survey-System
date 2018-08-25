@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const port = process.env.PORT || 5301;
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.resolve(__dirname, '../app/build')))
 app.use(function(req, res, next) {
   // Website you wish to allow to connect
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:' + port)
@@ -27,7 +27,7 @@ app.get('/test', async function(req, res) {
 })
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname,'build','index.html'));
+  res.sendFile(path.resolve(__dirname,'../app/build','index.html'))
 });
 
 app.listen(port, () => console.log('Auth server listening on port ' + port))
