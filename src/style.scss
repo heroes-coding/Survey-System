@@ -3,16 +3,27 @@
 
 body {
   background: $Light;
+  background-image: url("/sunset.jpg");
+  background-attachment: fixed;
+  background-position: center bottom;
 }
 
 .bannerHolder {
   width:50%;
+  background-color: rgba(255,255,255, 0.5);
+
   margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255, 0.75);
   z-index: 100;
   float: none;
+
 }
 
 .banner {
   max-width:100%;
   max-height:100%;
+
 }

@@ -6,6 +6,13 @@ const initialState = {
   id: 1,
   title: 'Student Readiness Survey',
   description: 'Please take a few minutes to complete the survey below.  The questions are designed to help better understand your academic strengths, behaviors, and values.  There are no  "right" or "wrong" answers.  Your honest responses will help your coach support you during the coming year.  Be sure to click the "Done" button at the end of the survey. Any information give will be kept private and used only to help students. Thank you!',
+  additionalQuestions: {
+    1: {
+      name: "length",
+      title: "Was this survey too long?",
+      answers: ["Yes", "No", "A little bit"]
+    }
+  },
   categories: {
     1: {
       answers: ["never like me", "once in a while like me", "sometimes like me", "often like me", "always like me"],
