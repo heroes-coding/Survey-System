@@ -7,7 +7,7 @@
   "scripts": {
     "heroku-postbuild": "yarn build",
     "start": "node server",
-    "heroku-postbuild": "cd app && yarn install && yarn build"
+    "heroku-postbuild": "cd app/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "dependencies": {
     "express": "^4.16.3"
