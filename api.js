@@ -4,7 +4,7 @@ const fs = require('fs')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const port = 5301;
+const port = process.env.PORT || 5301;
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'build')));
@@ -27,6 +27,7 @@ app.get('/test', async function(req, res) {
 })
 
 app.get('*', (req, res) => {
+  res.send({"ANYTHING?":"YUP"})
   res.sendFile(path.join(__dirname+'build/index.html'));
 });
 
