@@ -5,11 +5,11 @@
   "author": "heroes-coding <jeremy@heroes.report>",
   "license": "MIT",
   "scripts": {
-    "heroku-postbuild": "yarn build",
-    "start": "node server",
-    "heroku-postbuild": "cd app/ && yarn install && yarn build && yarn build-css"
+    "heroku-postbuild": "cd app/ && yarn install && yarn build && yarn build-css",
+    "start": "node server"
   },
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "firebase-admin": "^6.0.0"
   }
 }
