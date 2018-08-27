@@ -37,6 +37,10 @@ app.get('/test', async function(req, res) {
 })
 
 
+app.get('/login', async function(req, res) {
+  return res.sendFile(path.resolve(staticBuildPath,'login.html'))
+})
+
 // This wildcard path MUST COME after all other paths, and serves static content if built (if in production).
 if (fs.existsSync(staticBuildPath)) {
   app.get('*', (req, res) => { res.sendFile(staticBuildPath) })

@@ -1,8 +1,34 @@
 import React from 'react'
-import Question from './question'
+import Suggestions from './suggestions'
 
-const Category = (props) => {
-  const { id: categoryId, name, title, questions, updateSurvey, submitted, validationFailed, answers } = props
+const RadioButton = ({ id, value, reverse, categoryId, updateSurvey }) => {
+  return (
+    <div className="form-check-inline radio">
+      <input
+        type="radio"
+        className="form-check-input"
+        name={`optradio ${id}`}
+        onClick={() => {
+          updateSurvey(categoryId, id, value)
+        }}
+      />
+    </div>
+  )
+}
+
+
+const Question = ({ row, id, question, reverse, value, updateSurvey, categoryId, validationFailed, submitted, answers }) => {
+  const rowClass = row%2 ? 'oddQuestion' : 'evenQuestion'
+  const needsValidation = !value && validationFailed
+  return (
+    <div className={`questionHolder ${rowClass} ${needsValidation && ' invalid'}`}>
+      <span className="question">{question}</span>
+      {answers.map((name,value) => <RadioButton categoryId={categoryId} id={id} key={value} value={value+1} reverse={reverse} updateSurvey={updateSurvey}/>)}
+    </div>
+  )
+}
+
+const Category = ({ showAdvice, advice, links, id: categoryId, name, title, questions, updateSurvey, submitted, validationFailed, answers }) => {
   return (
     <div className="categoryHolder">
       <div className="categoryTitle">{title}</div>
@@ -29,6 +55,7 @@ const Category = (props) => {
             />
           )
       })}
+      {!!showAdvice && <Suggestions advice={advice} links={links} />}
     </div>
   )
 }

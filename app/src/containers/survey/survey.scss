@@ -2,7 +2,7 @@
 
 .surveyHolder {
   background: $White;
-  padding: 10px 20px;
+  padding: 30px 30px;
   border-radius: 5px;
   border: 1px solid $Color1;
   h5 {
@@ -13,6 +13,7 @@
 .surveyTitle {
   color: $Dark;
   font-size: 1.8em;
+  margin-bottom: 20px;
 }
 
 .surveyDescription {
@@ -59,4 +60,22 @@
   color: darken($Color1, 25%);
   white-space: pre-wrap;
   text-align: center;
+}
+
+.multipleChoiceHolder {
+  padding: 0px 0px 40px 0px;
+}
+
+.multipleQuestion {
+  margin: 10px 30px 0px;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.multiRadio {
+}
+
+#studentInfo {
+  margin-bottom: 100px;
 }

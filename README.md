@@ -33,11 +33,9 @@ admin.initializeApp({
 
 ### Development
 
-This project uses Yarn as its package manager.  To run it for development, you should run `yarn start` from the app subfolder.  
+This project uses Yarn as its package manager.  To run it for development, you should run `yarn start` from the /app subfolder.  
 
-<div class="alert alert-info">
-Make sure to run all `yarn add` commands for adding modules in the proper folder!  Modules for the server should be added at the top level, and modules for the app should be added in the app subfolder.
-</div>
+> Make sure to run all `yarn add` commands for adding modules in the proper folder!  Modules for the server should be added at the top level, and modules for the app should be added in the app subfolder.
 
 This launches both the express server and the create react app development server, and watches and applies changes (including SASS) in the app portion.  To see changes in the server (The Controller / Express server) you'll need to `ctrl-c`, confirm, `ctrl-c`, and run `yarn start` again.
 
@@ -68,10 +66,47 @@ The static site is built because of this part of /package.json:
 "heroku-postbuild": "cd app/ && yarn install && yarn build && yarn build-css",
 ```
 
-
-
 ## Admin Panel
+
+The admin panel will be composed of three main parts: a user
+
+accessible by two groups of users: administrators and coaches.  Administrators will have (somewhat limited for safety) creation and update privileges for surveys, as well as the ability to add new students, coaches, and admins.
+
+When adding students or coaches, a student group can be assigned to the students so that coaches are able to easily filter for the students they are supposed to help.
+
+Coaches will have the ability to view reports for previous surveys, filter based on survey or group, and modify (not delete) student names or ids (in case of mistakes on submission).
+
 
 ### Create or Modify Survey
 
+Admins are the only ones that can create or modify a survey.
+
+Creating a survey exposes the following fields:
+* Survey name
+* Description
+* Category based multiple choice questions - can create as many categories and questions within as necessary
+* Single multiple choice questions
+* Info fields - can be marked required or not
+
+Modifying a Survey allows:
+* Adding new categories / questions / fields
+* Changing description or name (but internal id will stay the same)
+* Does not allow deleting of survey
+
+
 ### View Reports
+
+Viewing reports will allow selecting individual student or summary data by survey.  
+
+Summary data will show the following:
+
+Average / mean / median / score / Mini distribution plot (histogram as all questions are discrete) for each question and category.  
+
+Student data will show all past scores on the selected survey
+
+
+## Survey
+
+Surveys themselves are located at (website base)/{survey_name}.  All required questions must be answered.
+
+After a submission attempt, required fields that are not filled out are highlighted.  If all of the fields are valid, the survey is submitted, and information boxes are revealed for categories of questions that average at or below a certain score.

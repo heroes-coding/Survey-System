@@ -3,6 +3,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { updateSurvey } from '../../actions'
 import Category from './category'
+import MutipleChoice from './multiple_choice'
 
 class App extends Component {
   constructor(props) {
@@ -31,9 +32,9 @@ class App extends Component {
     let result = await axios.get(`test`)
   }
   render() {
-    const { title, description, categories } = this.props.surveyData
+    const { averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = this.props.surveyData
+    console.log({averageScores, unansweredQuestionsCount, totalQuestionsCount})
     const { validationFailed, formSubmitted } = this.state
-    const unansweredQuestionsCount = Object.entries(categories).map(c => Object.entries(c[1].questions).map(q => q[1].value)).reduce((acc, val) => acc.concat(val), []).filter(x => !x).length
     return (
       <div className="surveyHolder">
         <h4 className="surveyTitle">{title}</h4>
@@ -41,13 +42,38 @@ class App extends Component {
 
         {Object.entries(categories).map(entry => {
           const [ id, c ] = entry
+          console.log({avg: averageScores[id], cut: c.cutoffScore, sub: this.state.formSubmitted})
+          const showAdvice = averageScores[id] <= c.cutoffScore
           return (
-            <Category key={id} id={id} answers={c.answers} validationFailed={validationFailed} name={c.name} title={c.title} questions={c.questions} updateSurvey={this.updateSurvey} />
+            <Category
+              key={id}
+              id={id}
+              answers={c.answers}
+              validationFailed={validationFailed}
+              name={c.name}
+              title={c.title}
+              questions={c.questions}
+              updateSurvey={this.updateSurvey}
+              advice={c.advice}
+              links={c.links}
+              showAdvice={showAdvice}
+              submitted={this.state.formSubmitted}
+            />
           )
         })}
+
+        <MutipleChoice
+          key="multiple"
+          id="multiple"
+          validationFailed={validationFailed}
+          questions={additionalQuestions}
+          updateSurvey={this.updateSurvey}
+        />
+
         {!!unansweredQuestionsCount&&validationFailed&&<div className="alert alert-info" role="alert">
           {`Please answer the remaining ${unansweredQuestionsCount} question${unansweredQuestionsCount > 1 ? 's' : '' } above.`}
         </div>}
+
         <form
           id="studentInfo"
           onSubmit={(e) => {
