@@ -25,7 +25,7 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
-    <div id="firebaseui-auth-container"></div>
+
     <div id="root"></div>
     <!--
       This HTML file is a template.
@@ -43,47 +43,4 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-  <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase.js"></script>
-  <script>
-    // Initialize Firebase
-    // TODO: Replace with your project's customized code snippet
-    const config = {
-      apiKey: "AIzaSyBeQ2Y7EjkzdAnU9j1zGEVczbWwJeNW6g4",
-      authDomain: "studentequity-783ff.firebaseapp.com",
-      databaseURL: "https://studentequity-783ff.firebaseio.com",
-      projectId: "studentequity-783ff",
-      storageBucket: "studentequity-783ff.appspot.com",
-      messagingSenderId: "590767660493"
-    }
-    firebase.initializeApp(config)
-  </script>
-  <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-auth.js"></script>
-  <script src="https://cdn.firebase.com/libs/firebaseui/3.4.0/firebaseui.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.4.0/firebaseui.css" />
-  <script type="text/javascript">
-    // FirebaseUI config.
-    var uiConfig = {
-      signInSuccessUrl: 'admin',
-      signInOptions: [
-        // Leave the lines as is for the providers you want to offer your users.
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-        firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
-      ],
-      // tosUrl and privacyPolicyUrl accept either url string or a callback
-      // function.
-      // Terms of service url/callback.
-      tosUrl: 'tos',
-      // Privacy policy url/callback.
-      privacyPolicyUrl: function() {
-        window.location.assign('privacy-policy');
-      }
-    };
-
-    // Initialize the FirebaseUI Widget using Firebase.
-    var ui = new firebaseui.auth.AuthUI(firebase.auth());
-    // The start method will wait until the DOM is loaded.
-    ui.start('#firebaseui-auth-container', uiConfig);
-  </script>
 </html>
