@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Link, withRouter } from 'react-router-dom'
 import { passwordIsStrong } from '../../helpers/tiny_helpers'
-import { createUserWithEmailAndPassword, verifyEmail } from './auth_functions';
-import { SIGN_UP, LOGIN } from '../../constants/routes';
+import { createUserWithEmailAndPassword, verifyEmail } from './auth_functions'
+import { SIGN_UP, LOGIN, ADMIN } from '../../constants/routes'
 
 const INITIAL_STATE = {
   username: '',
@@ -34,6 +35,13 @@ const byPropKey = (propertyName, value) => () => {
 }
 
 class SignUpForm extends Component {
+  shouldComponentUpdate() {
+    if (this.props.authUser) {
+      this.props.history.push(ADMIN)
+      return false
+    }
+    return true
+  }
   constructor(props) {
     super(props)
     this.state = { ...INITIAL_STATE }
@@ -64,6 +72,7 @@ class SignUpForm extends Component {
 
   render() {
     const { username, email, passwordOne, passwordTwo, error, disabled } = this.state
+    const { history } = this.props
     return (
       <form onSubmit={this.onSubmit}>
         <div className="input-group mb-3">
@@ -105,6 +114,9 @@ class SignUpForm extends Component {
             Sign Up
           </button>
         </div>
+        <span className="resetPassword"
+          onClick={(e) => { history.push(LOGIN) }}
+        >Need to log in instead of sign up?  Click here to log in</span>
         { error && <div className="alert alert-primary" role="alert">{error.message}</div> }
       </form>
 
@@ -119,8 +131,12 @@ const SignUpLink = () =>
   </p>
 
 
-const SignUpPage = ({ history }) => <SignUpForm history={history}/>
-export default withRouter(SignUpPage);
+function mapStateToProps(state, ownProps, terms) {
+  const { authUser, history, surveyData } = ownProps
+  return { surveyData, authUser, history }
+}
+
+export default withRouter(connect(mapStateToProps,{})(SignUpForm))
 
 export {
   SignUpForm,

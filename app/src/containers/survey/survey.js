@@ -36,7 +36,7 @@ class App extends Component {
     console.log({averageScores, unansweredQuestionsCount, totalQuestionsCount})
     const { validationFailed, formSubmitted } = this.state
     return (
-      <div className="surveyHolder">
+      <div>
         <h4 className="surveyTitle">{title}</h4>
         <div className="surveyDescription">{description}</div>
 

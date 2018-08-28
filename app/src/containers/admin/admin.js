@@ -3,23 +3,15 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
-import { asleep } from '../../helpers/tiny_helpers'
-import { auth } from '../auth/firebase'
+import withAuthorization from '../auth/with_authorization'
+import SignOut from '../auth/sign_out'
 
 class Admin extends Component {
   async componentDidMount () {
   }
   render() {
     return (
-      <div
-        onClick={() => {
-          auth.signOut().then(function() {
-            console.log('successfully logged out!')
-          }, function(error) {
-            // An error happened.
-          });
-        }}
-        >{"DON'T LOGOUT NOOOOO"}</div>
+      <SignOut />
     )
   }
 }
@@ -29,4 +21,9 @@ function mapStateToProps(state, ownProps, terms) {
   return { surveyData }
 }
 
-export default connect(mapStateToProps,{})(Admin)
+const authCondition = (authUser) => {
+  console.log({authUser})
+  return !!authUser
+}
+
+export default withAuthorization(authCondition)(connect(mapStateToProps,{})(Admin))

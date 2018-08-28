@@ -20,7 +20,7 @@ class App extends Component {
     let result = await axios.get(`/test`)
   }
   render() {
-    const { authUser } = this.props
+    const { authUser, idToken } = this.props
     return (
       <div className='container-fluid' >
           <div className="row">
@@ -30,28 +30,28 @@ class App extends Component {
           </div>
           <div className="row">
             <div className="col-lg-1 col-xl-2"></div>
-            <div className='col-sm-12 col-lg-10 col-xl-8' id="contentHolder">
+            <div className='col-sm-12 col-lg-10 col-xl-8 surveyHolder' id="contentHolder">
             <Switch>
               <Route
                 path={routes.LOGIN}
-                render={(props) => <Login {...props} authUser={authUser} />}
+                render={(props) => <Login {...props} authUser={authUser} idToken={idToken} />}
               />
               <Route
                 path={routes.ADMIN}
-                render={(props) => <Admin {...props} authUser={authUser} />}
+                render={(props) => <Admin {...props} authUser={authUser} idToken={idToken} />}
               />
               <Route
                 path={routes.PASSWORD_FORGET}
-                render={(props) => <PasswordForgetPage {...props} authUser={authUser} />}
+                render={(props) => <PasswordForgetPage {...props} authUser={authUser} idToken={idToken} />}
               />
               <Route
                 path={routes.SIGN_UP}
-                render={(props) => <SignUp {...props} authUser={authUser} />}
+                render={(props) => <SignUp {...props} authUser={authUser} idToken={idToken} />}
               />
               {/* <Route path="/players/:id" component={PlayerPage} /> */}
               <Route
                 path="/"
-                render={(props) => <Survey {...props} authUser={authUser} />}
+                render={(props) => <Survey {...props} authUser={authUser} idToken={idToken} />}
               />
             </Switch>
             <div className="col-lg-1 col-xl-2"></div>
@@ -64,8 +64,8 @@ class App extends Component {
 
 function mapStateToProps(state, ownProps, terms) {
   const { surveyData } = state
-  const { authUser } = ownProps
-  return { surveyData, authUser }
+  const { authUser, idToken } = ownProps
+  return { surveyData, authUser, idToken }
 }
 
 export default withAuthentication(withRouter(connect(mapStateToProps, {})(App)))

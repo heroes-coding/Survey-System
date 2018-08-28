@@ -1,6 +1,14 @@
 @import "../../style/variables.scss";
 
 
+.resetPassword {
+    text-align: center;
+    display: block;
+    text-decoration: underline;
+    cursor: pointer;
+    color: $Color1;
+    margin-bottom: 15px;
+}
 
 .firebaseui-card-content {
   background: $White;

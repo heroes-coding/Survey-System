@@ -7,6 +7,9 @@ export const createUserWithEmailAndPassword = (email, password) =>
 export const signInWithEmailAndPassword = (email, password) =>
   auth.signInWithEmailAndPassword(email, password)
 
+export const getIdToken = async() =>
+  auth.currentUser.getIdToken()
+
 export const signOut = () =>
   auth.signOut()
 
@@ -16,5 +19,5 @@ export const doPasswordReset = (email) =>
 export const doPasswordUpdate = (password) =>
   auth.currentUser.updatePassword(password)
 
-export const verifyEmail = () => 
+export const verifyEmail = () =>
   auth.currentUser.sendEmailVerification()

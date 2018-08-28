@@ -1,6 +1,7 @@
 import React from 'react'
 import { auth } from './firebase'
 import AuthUserContext from './auth_user_context'
+import { getIdToken } from './auth_functions'
 
 const withAuthentication = (Component) => {
   class WithAuthentication extends React.Component {
@@ -8,20 +9,28 @@ const withAuthentication = (Component) => {
       super(props)
       this.state = {
         authUser: null,
+        idToken: null
       }
     }
     componentDidMount() {
       auth.onAuthStateChanged(authUser => {
         authUser
           ? this.setState({ authUser })
-          : this.setState({ authUser: null })
+          : this.setState({ authUser: null, idToken: null })
+        if (authUser) {
+          getIdToken().then((idToken) => {
+            this.setState({ ...this.state, idToken })
+          }).catch((error) => {
+            console.log("Couldn't get idToken",error)
+          })
+        }
       })
     }
     render() {
-      const { authUser } = this.state;
+      const { authUser, idToken } = this.state;
       return (
-        <AuthUserContext.Provider value={authUser}>
-          <Component authUser={authUser} />
+        <AuthUserContext.Provider value={ {authUser,idToken} }>
+          <Component authUser={authUser} idToken={idToken} />
         </AuthUserContext.Provider>
       )
     }

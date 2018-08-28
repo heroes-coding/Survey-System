@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { auth } from './firebase';
+import {signOut } from './auth_functions';
 
 const SignOutButton = () =>
   <button
     type="button"
     className ="btn btn-secondary btn-md"
-    onClick={auth.doSignOut}
+    onClick={signOut}
   >
     Sign Out
   </button>
