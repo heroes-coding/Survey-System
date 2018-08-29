@@ -3,7 +3,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { asleep } from '../../helpers/tiny_helpers'
 import { withRouter } from 'react-router-dom'
-import { ADMIN, SIGN_UP } from '../../constants/routes'
+import { DASHBOARD, SIGN_UP } from '../../constants/routes'
 import { signInWithEmailAndPassword, doPasswordReset } from './auth_functions'
 
 class Login extends Component {
@@ -15,7 +15,7 @@ class Login extends Component {
   }
   shouldComponentUpdate() {
     if (this.props.authUser) {
-      this.props.history.push(ADMIN)
+      this.props.history.push(DASHBOARD)
       return false
     }
     return true
@@ -40,7 +40,7 @@ class Login extends Component {
               const emailAddress = window.$('#loginInfo input')[0].value
               const password = window.$('#loginInfo input')[1].value
               signInWithEmailAndPassword(emailAddress, password).then(authUser => {
-                  this.props.history.push(ADMIN)
+                  this.props.history.push(DASHBOARD)
                 }).catch(error => {
                   this.setState({ ...this.state, error })
                 })

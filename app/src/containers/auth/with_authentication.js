@@ -2,6 +2,7 @@ import React from 'react'
 import { auth } from './firebase'
 import AuthUserContext from './auth_user_context'
 import { getIdToken } from './auth_functions'
+import { updateUserInfo } from '../../actions'
 
 const withAuthentication = (Component) => {
   class WithAuthentication extends React.Component {
@@ -27,7 +28,7 @@ const withAuthentication = (Component) => {
       })
     }
     render() {
-      const { authUser, idToken } = this.state;
+      const { authUser, idToken } = this.state
       return (
         <AuthUserContext.Provider value={ {authUser,idToken} }>
           <Component authUser={authUser} idToken={idToken} />

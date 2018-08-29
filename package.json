@@ -5,7 +5,7 @@
   "author": "heroes-coding <jeremy@heroes.report>",
   "license": "MIT",
   "scripts": {
-    "heroku-postbuild": "cd app/ && yarn install && yarn build && yarn build-css",
+    "heroku-postbuild": "cd app/ && yarn install && yarn build-css && yarn build",
     "start": "node server"
   },
   "dependencies": {

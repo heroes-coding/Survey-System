@@ -1,6 +1,5 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-
 import AuthUserContext from './auth_user_context'
 import { auth} from './firebase'
 import { LOGIN } from '../../constants/routes'
@@ -12,7 +11,7 @@ const withAuthorization = (authCondition) => (Component) => {
         if (!authCondition(authUser)) {
           this.props.history.push(LOGIN)
         }
-      });
+      })
     }
 
     render() {

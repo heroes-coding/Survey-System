@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { UPDATE_SURVEY } from '../actions'
+import { UPDATE_SURVEY, POPULATE_SURVEY } from '../actions'
 
 //import { UPDATE_SURVEY } from '../actions'
 let initialState = {
@@ -79,13 +79,17 @@ const getQuestionCounts = (surveyData) => {
 initialState = { ...initialState, ...getQuestionCounts(initialState)}
 
 export default function(state = initialState, action) {
-  if (action.type === UPDATE_SURVEY) {
+  let newState
+  if (action.type === POPULATE_SURVEY) {
+    newState = action.newSurvey
+  } else if (action.type === UPDATE_SURVEY) {
     const { categoryId, questionId, value } = action
-    let newState = _.cloneDeep(state)
+    newState = _.cloneDeep(state)
     // currently only two possible kinds of questions for survey.  Single multiple choice and category based multiple choice.
     if (categoryId === 'multiple') {
       newState.additionalQuestions[questionId].value = value
     } else newState.categories[categoryId].questions[questionId].value = value
+  } if (action.type === UPDATE_SURVEY || action.type === POPULATE_SURVEY) {
     const { totalQuestionsCount, unansweredQuestionsCount, averageScores } = getQuestionCounts(newState)
     newState.totalQuestionsCount = totalQuestionsCount
     newState.unansweredQuestionsCount = unansweredQuestionsCount

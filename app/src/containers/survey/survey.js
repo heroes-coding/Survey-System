@@ -32,8 +32,9 @@ class App extends Component {
     let result = await axios.get(`test`)
   }
   render() {
-    const { averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = this.props.surveyData
-    console.log({averageScores, unansweredQuestionsCount, totalQuestionsCount})
+    const { isDemo, surveyData } = this.props
+    const { averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = surveyData
+    console.log({isDemo, surveyData})
     const { validationFailed, formSubmitted } = this.state
     return (
       <div>
@@ -109,6 +110,7 @@ class App extends Component {
 
 function mapStateToProps(state, ownProps, terms) {
   const { surveyData } = state
+  const { isDemo } = ownProps
   return { surveyData }
 }
 

@@ -5,8 +5,8 @@ import Survey from './containers/survey/survey'
 import Login from './containers/auth/login'
 import PasswordForgetPage from './containers/auth/password_forget'
 import SignUp from './containers/auth/sign_up'
-import Admin from './containers/admin/admin'
-import * as routes from './constants/routes'
+import Dashboard from './containers/dashboard/dashboard'
+import { DASHBOARD, SIGN_UP, LOGIN, PASSWORD_FORGET } from './constants/routes'
 import withAuthentication from './containers/auth/with_authentication'
 
 import 'font-awesome/css/font-awesome.min.css'
@@ -33,19 +33,19 @@ class App extends Component {
             <div className='col-sm-12 col-lg-10 col-xl-8 surveyHolder' id="contentHolder">
             <Switch>
               <Route
-                path={routes.LOGIN}
+                path={LOGIN}
                 render={(props) => <Login {...props} authUser={authUser} idToken={idToken} />}
               />
               <Route
-                path={routes.ADMIN}
-                render={(props) => <Admin {...props} authUser={authUser} idToken={idToken} />}
+                path={DASHBOARD}
+                render={(props) => <Dashboard {...props} authUser={authUser} idToken={idToken} />}
               />
               <Route
-                path={routes.PASSWORD_FORGET}
+                path={PASSWORD_FORGET}
                 render={(props) => <PasswordForgetPage {...props} authUser={authUser} idToken={idToken} />}
               />
               <Route
-                path={routes.SIGN_UP}
+                path={SIGN_UP}
                 render={(props) => <SignUp {...props} authUser={authUser} idToken={idToken} />}
               />
               {/* <Route path="/players/:id" component={PlayerPage} /> */}

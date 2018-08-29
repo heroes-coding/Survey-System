@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { passwordIsStrong } from '../../helpers/tiny_helpers'
 import { createUserWithEmailAndPassword, verifyEmail } from './auth_functions'
-import { SIGN_UP, LOGIN, ADMIN } from '../../constants/routes'
+import { SIGN_UP, LOGIN, DASHBOARD } from '../../constants/routes'
 
 const INITIAL_STATE = {
   username: '',
@@ -37,7 +37,7 @@ const byPropKey = (propertyName, value) => () => {
 class SignUpForm extends Component {
   shouldComponentUpdate() {
     if (this.props.authUser) {
-      this.props.history.push(ADMIN)
+      this.props.history.push(DASHBOARD)
       return false
     }
     return true
