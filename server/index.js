@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // This and the wildcard path below serves all static content from the static build of create react app
 // during production. If it doesn't exist, it should be development and so is ignored.
 const staticBuildPath = path.resolve(__dirname, '../app/build')
-if (fs.existsSync(staticBuildPath)) app.use(staticBuildPath)
+if (fs.existsSync(staticBuildPath)) app.use(express.static(staticBuildPath))
 
 
 
@@ -39,7 +39,10 @@ app.get('/test', async function(req, res) {
 
 // This wildcard path MUST COME after all other paths, and serves static content if built (if in production).
 if (fs.existsSync(staticBuildPath)) {
-  app.get('*', (req, res) => { res.sendFile(staticBuildPath) })
+  app.get('*', (req, res) => {
+    console.log(Object.keys(req))
+    res.sendFile(path.resolve(__dirname, '../app/build', 'index.html'))
+  })
 }
 
 
