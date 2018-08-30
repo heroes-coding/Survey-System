@@ -34,7 +34,6 @@ class App extends Component {
   render() {
     const { isDemo, surveyData } = this.props
     const { averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = surveyData
-    console.log({isDemo, surveyData})
     const { validationFailed, formSubmitted } = this.state
     return (
       <div>
@@ -43,7 +42,6 @@ class App extends Component {
 
         {Object.entries(categories).map(entry => {
           const [ id, c ] = entry
-          console.log({avg: averageScores[id], cut: c.cutoffScore, sub: this.state.formSubmitted})
           const showAdvice = averageScores[id] <= c.cutoffScore
           return (
             <Category

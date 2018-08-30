@@ -61,7 +61,7 @@ const getQuestionCounts = (surveyData) => {
   // pull of length of answers for base score range (for reverse values)
   let averageScores = {}
   let allQuestions = Object.entries(categories).map(c => {
-    const scoreRange = c[1].answers.length - 1
+    const scoreRange = c[1].answers.length + 1
     const scores = Object.entries(c[1].questions).map(q => q[1].value && q[1].reverse ? scoreRange - q[1].value : q[1].value)
     // stores the average score by category id
     const answeredScores = scores.filter(x => x)
@@ -94,6 +94,7 @@ export default function(state = initialState, action) {
     newState.totalQuestionsCount = totalQuestionsCount
     newState.unansweredQuestionsCount = unansweredQuestionsCount
     newState.averageScores = averageScores
+    console.log({ totalQuestionsCount, unansweredQuestionsCount, averageScores })
     return newState
   }
   return state

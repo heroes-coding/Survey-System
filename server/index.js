@@ -40,7 +40,6 @@ app.get('/test', async function(req, res) {
 // This wildcard path MUST COME after all other paths, and serves static content if built (if in production).
 if (fs.existsSync(staticBuildPath)) {
   app.get('*', (req, res) => {
-    console.log(Object.keys(req))
     res.sendFile(path.resolve(__dirname, '../app/build', 'index.html'))
   })
 }
