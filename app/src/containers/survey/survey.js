@@ -46,6 +46,7 @@ class App extends Component {
     let result
     if (surveyId) result = await axios.get(`/getSurvey/${surveyId}`)
     else result = await axios.get(`/getDefault`)
+    console.log(result.data)
     this.props.populateSurveyDraft(result.data)
   }
   render() {
@@ -54,71 +55,75 @@ class App extends Component {
     const { validationFailed, formSubmitted, error } = this.state
     console.log({ formSubmitted })
     return (
-      <div>
-        <h4 className="surveyTitle">{title}</h4>
-        <div className="surveyDescription">{description}</div>
+      <div className="row">
+        <div className='col-lg-1 col-xl-2' />
+        <div className='col-sm-12 col-lg-10 col-xl-8 surveyHolder' id="contentHolder">
+          <h4 className="surveyTitle">{title}</h4>
+          <div className="surveyDescription">{description}</div>
 
-        {Object.entries(categories).map(entry => {
-          const [ id, c ] = entry
-          const showAdvice = averageScores[id] <= c.cutoffScore
-          return (
-            <Category
-              key={id}
-              id={id}
-              answers={c.answers}
-              validationFailed={validationFailed}
-              name={c.name}
-              title={c.title}
-              questions={c.questions}
-              updateSurvey={this.updateSurvey}
-              advice={c.advice}
-              links={c.links}
-              showAdvice={showAdvice}
-              submitted={this.state.formSubmitted}
-            />
-          )
-        })}
-        <MutipleChoice
-          key="multiple"
-          id="multiple"
-          validationFailed={validationFailed}
-          questions={additionalQuestions}
-          updateSurvey={this.updateSurvey}
-        />
-        {!!unansweredQuestionsCount&&validationFailed&&<div className="alert alert-info" role="alert">
-          {`Please answer the remaining ${unansweredQuestionsCount} question${unansweredQuestionsCount > 1 ? 's' : '' } above.`}
-        </div>}
+          {Object.entries(categories).map(entry => {
+            const [ id, c ] = entry
+            const showAdvice = averageScores[id] <= c.cutoffScore
+            return (
+              <Category
+                key={id}
+                id={id}
+                answers={c.answers}
+                validationFailed={validationFailed}
+                name={c.name}
+                title={c.title}
+                questions={c.questions}
+                updateSurvey={this.updateSurvey}
+                advice={c.advice}
+                links={c.links}
+                showAdvice={showAdvice}
+                submitted={this.state.formSubmitted}
+              />
+            )
+          })}
+          <MutipleChoice
+            key="multiple"
+            id="multiple"
+            validationFailed={validationFailed}
+            questions={additionalQuestions}
+            updateSurvey={this.updateSurvey}
+          />
+          {!!unansweredQuestionsCount&&validationFailed&&<div className="alert alert-info" role="alert">
+            {`Please answer the remaining ${unansweredQuestionsCount} question${unansweredQuestionsCount > 1 ? 's' : '' } above.`}
+          </div>}
 
-        <form
-          id="studentInfo"
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
-        >
-          <div className="input-group mb-3">
-            <div className="input-group-prepend">
-              <span className="input-group-text">Student</span>
+          <form
+            id="studentInfo"
+            onSubmit={(e) => {
+              e.preventDefault()
+            }}
+          >
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text">Student</span>
+              </div>
+              <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, firstName: e.target.value})} placeholder="First / Given Name" required />
+              <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, lastName: e.target.value})} placeholder="Last / Family Name" required />
+              <div className="input-group-prepend">
+                <span className="input-group-text">SRJC ID #</span>
+              </div>
+              <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, studentId: e.target.value})} placeholder="(Starts with an 8)" />
+              <button className="btn btn-secondary btn-md"
+                type="submit"
+                disabled={formSubmitted}
+                onClick={(e) => {
+                  // only submits the form if the student info fields are valid and there are no unanswered questions and it was not already submitted
+                  if (window.$('#studentInfo')[0].checkValidity() && !unansweredQuestionsCount && !formSubmitted) this.submitForm()
+                  else this.failValidation()
+                }}
+              >
+                {formSubmitted ? 'Thanks!' : 'Submit'}
+              </button>
             </div>
-            <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, firstName: e.target.value})} placeholder="First / Given Name" required />
-            <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, lastName: e.target.value})} placeholder="Last / Family Name" required />
-            <div className="input-group-prepend">
-              <span className="input-group-text">SRJC ID #</span>
-            </div>
-            <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, studentId: e.target.value})} placeholder="(Starts with an 8)" />
-            <button className="btn btn-secondary btn-md"
-              type="submit"
-              disabled={formSubmitted}
-              onClick={(e) => {
-                // only submits the form if the student info fields are valid and there are no unanswered questions and it was not already submitted
-                if (window.$('#studentInfo')[0].checkValidity() && !unansweredQuestionsCount && !formSubmitted) this.submitForm()
-                else this.failValidation()
-              }}
-            >
-              {formSubmitted ? 'Thanks!' : 'Submit'}
-            </button>
-          </div>
-        </form>
-        { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
+          </form>
+          { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
+        </div>
+        <div className='col-lg-1 col-xl-2' />
       </div>
     );
   }

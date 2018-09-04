@@ -4,53 +4,11 @@ import { UPDATE_SURVEY, POPULATE_SURVEY } from '../actions'
 //import { UPDATE_SURVEY } from '../actions'
 let initialState = {
   id: 1,
-  title: 'Student Readiness Survey',
-  description: 'Please take a few minutes to complete the survey below.  The questions are designed to help better understand your academic strengths, behaviors, and values.  There are no  "right" or "wrong" answers.  Your honest responses will help your coach support you during the coming year.  Be sure to click the "Done" button at the end of the survey. Any information give will be kept private and used only to help students. Thank you!',
+  title: '',
+  description: '',
   additionalQuestions: {
-    1: {
-      name: "length",
-      title: "Was this survey too long?",
-      answers: ["Yes", "No", "A little bit"],
-      value: null
-    },
-    2: {
-      name: "age-old",
-      title: "What's better?",
-      answers: ["Dogs", "Cats"],
-      value: null
-    }
   },
   categories: {
-    1: {
-      answers: ["never like me", "once in a while like me", "sometimes like me", "often like me", "always like me"],
-      name: "",
-      title: "Please rate your agreement to the following statements about yourself",
-      questions: {
-        1: { question: "I do my best in my classes.", reverse: false, value: null },
-        2: { question: "I consistently do my school work well.", reverse: false, value: null }
-      },
-      cutoffScore: 2,
-      advice: "Remember, \"There is no try. Do or do not.\" -- Yoda. Here are some links to help you on your way:",
-      links: [
-        {link:"https://www.huffingtonpost.com/gabrielle-posard-/star-wars-quotes_b_3625405.html", name:"Star Wars Quotes"}
-      ]
-
-    },
-    2: {
-      answers: ["never like me", "once in a while like me", "sometimes like me", "often like me", "always like me"],
-      name: "",
-      title: "Please rate your agreement to the following statements about yourself",
-      questions: {
-        3: { value: null, question: "I start homework assignments early enough to avoid having to rush to complete them.", reverse: false },
-        4: { value: null, question: "If I read a word I don't know, I take the time to look it up.", reverse: false },
-        5: { value: null, question: "When I don't understand something I put it off until later.", reverse: true }
-      },
-      cutoffScore: 3,
-      advice: "Someday Is Not a Day of the Week",
-      links: [
-        { link: "https://www.amazon.com/Someday-Not-Week-Denise-Brennan-Nelson-ebook/dp/B00H3VZHJS", name: "A Great Children's Book"}
-      ]
-    }
   }
 }
 

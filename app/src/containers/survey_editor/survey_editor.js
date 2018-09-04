@@ -3,7 +3,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { populateSurveyDraft } from '../../actions'
 import Survey from '../survey/survey'
-import { defaultStandaloneQuestion, defaultSurvey, defaultCategory, defaultLink, defaultQuestion, defaultAnswer } from '../../constants'
+import { defaultCoachLink, defaultStandaloneQuestion, defaultSurvey, defaultCategory, defaultLink, defaultQuestion, defaultAnswer } from '../../constants'
 import _ from "lodash"
 import { max } from 'd3'
 import TextField from '../../components/text_field'
@@ -15,7 +15,7 @@ import DropDown from '../../components/drop_down'
 import InlineTitleText from '../../components/inline_title_text'
 import { addOrModifySurvey, setDefaultSurvey } from '../auth/auth_functions'
 
-const Category = ({ addQuestion, addLink, addAnswer, updateLink, deleteCategory, links, cutoffScore, advice, kudos, updateAnswer, name, title, answers, questions, updateCategory, updateQuestion, id, isOld }) =>
+const Category = ({ addQuestion, coachLinks, coachAdvice, addLink, addAnswer, updateLink, deleteCategory, links, cutoffScore, advice, kudos, updateAnswer, name, title, answers, questions, updateCategory, updateQuestion, id, isOld }) =>
   <div className="categoryHolder">
     <div className="categoryHeader">
       <h6>{`Category ${id} - ${name}`}</h6>
@@ -44,10 +44,10 @@ const Category = ({ addQuestion, addLink, addAnswer, updateLink, deleteCategory,
         if (value !== "") value = tail === "." ? value : parseFloat(value)
         if (!isNaN(tail) || tail === '.' || value === "") updateCategory(id,"cutoffScore",value)
       }}/>
+      <div className="categoryHeader">Student resources:</div>
       <MultiLine text={advice} title="Advice (for scores at or below the cutoff score)" updateFunction={(value) => updateCategory(id,'advice', value) } />
       <MultiLine text={kudos} title="Compliments / Kudos (for scores above the cutoff score)" updateFunction={(value) => updateCategory(id,'kudos', value) } />
-      <div className="categoryHeader">Links:</div>
-      <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => addLink(id)}>Add Link</button>
+      <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => addLink(id)}>Add Student Link</button>
       {links.map((l,i) => {
         const { goodLink, badLink, name, link } = l
         return (
@@ -71,6 +71,33 @@ const Category = ({ addQuestion, addLink, addAnswer, updateLink, deleteCategory,
             <CheckBox label="&nbsp; &nbsp; Low Score Link: " checked={badLink} updateFunction={(checked) => updateLink(id,i,"badLink", checked)} />
             <CheckBox label="High Score Link: " checked={goodLink} updateFunction={(checked) => updateLink(id,i,"goodLink", checked)} />
             <button type="button" className="btn btn-danger" onClick={event => updateLink(id,i)}>Del</button>
+          </div>
+        )
+      })}
+      <div className="categoryHeader">Coach resources:</div>
+      <MultiLine text={coachAdvice} title="Internal advice (for coaches)" updateFunction={(value) => updateCategory(id,'coachAdvice', value) } />
+      <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => addLink(id,true)}>Add Coach Link</button>
+      {coachLinks.map((l,i) => {
+        const { name, link } = l
+        return (
+          <div key={i} className="input-group mb-3">
+            <div className="input-group-prepend"><span className="input-group-text">Link text: </span></div>
+            <input
+              type="text"
+              className="form-control"
+              value={name}
+              onChange={event => updateLink(id, i, "name", event.target.value, true)}
+              required
+            ></input>
+            <div className="input-group-prepend"><span className="input-group-text">Link: </span></div>
+            <input
+              type="text"
+              className="form-control"
+              value={link}
+              onChange={event => updateLink(id, i, "link", event.target.value, true)}
+              required
+            ></input>
+            <button type="button" className="btn btn-danger" onClick={event => updateLink(id,i,null,null, true)}>Del</button>
           </div>
         )
       })}
@@ -175,10 +202,16 @@ class SurveyEditor extends Component {
     tempState.categories[newKey] = newCategory
     this.setState({...this.state, survey: tempState, error: null})
   }
-  addLink(id) {
+  addLink(id,isCoachLink) {
     const tempState = this.state.survey
-    tempState.categories[id].links.push(_.clone(defaultLink,true))
-    this.setState({...this.state, survey: tempState, error: null})
+    if (isCoachLink) {
+      tempState.categories[id].coachLinks.push(_.clone(defaultLink,true))
+      this.setState({...this.state, survey: tempState, error: null})
+    } else {
+      tempState.categories[id].links.push(_.clone(defaultCoachLink,true))
+      this.setState({...this.state, survey: tempState, error: null})
+    }
+
   }
   addQuestion(id) {
     const tempState = this.state.survey
@@ -192,10 +225,15 @@ class SurveyEditor extends Component {
     tempState.categories[id].answers.push(defaultAnswer)
     this.setState({...this.state, survey: tempState, error: null})
   }
-  updateLink(id,linkId,key,value) {
+  updateLink(id,linkId,key,value,isCoachLink) {
     const tempState = this.state.survey
-    if (!key) tempState.categories[id].links.splice(linkId,1) // no key == delete
-    else tempState.categories[id].links[linkId][key] = value
+    if (isCoachLink) {
+      if (!key) tempState.categories[id].coachLinks.splice(linkId,1) // no key == delete
+      else tempState.categories[id].coachLinks[linkId][key] = value
+    } else {
+      if (!key) tempState.categories[id].links.splice(linkId,1) // no key == delete
+      else tempState.categories[id].links[linkId][key] = value
+    }
     this.setState({...this.state, survey: tempState, error: null})
   }
   deleteCategory(id) {
@@ -283,7 +321,14 @@ class SurveyEditor extends Component {
     this.changeSurveyAge(survey) // mutates survey
     addOrModifySurvey(survey).then(r => {
       const survey = this.state.survey
-      if (r.data === "okay") this.setState({...this.state, survey, error: `Survey ${survey.id} successfully added`, isOld: true })
+      if (r.data === "okay") this.setState({
+        ...this.state,
+        survey,
+        error:
+        `Survey ${survey.id} successfully added`,
+        isOld: true,
+        surveyIds: isOld ? this.state.surveyIds : this.state.surveyIds.concat([survey.id])
+      })
       else this.setState({...this.state, error: r.data })
     })
   }

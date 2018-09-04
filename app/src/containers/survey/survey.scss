@@ -3,8 +3,8 @@
 .surveyHolder {
   background: $White;
   padding: 30px 30px;
-  border-radius: 5px;
-  border: 1px solid $Color1;
+  border-radius: 2px;
+  border: 1px solid $Light;
   h5 {
     font-size: 1.4em;
   }
@@ -21,7 +21,7 @@
   margin: 10px 0;
 }
 
-.categoryHolder {
+.surveyCategory {
   margin: 50px 10px;
 }
 
@@ -39,11 +39,27 @@
   display: flex;
   width: 100%;
   justify-content: space-between;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border: 1px solid darken($White,20%);
+  box-shadow: 2px 2px darken($White,30%);
+}
+
+.questionHolder:hover {
+  background: lighten($Light,10%);
+}
+
+.answerHolder {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
   padding: 5px 20px;
   margin: 10px 0;
 }
+
+
 .oddQuestion {
-  background: $Light;
+  // background: $Light;
 }
 
 
@@ -56,7 +72,7 @@
 .answerHeader {
   font-size: 0.7em;
   font-weight: bold;
-  margin: 10px -10px -15px 20px;
+  margin: 10px -10px -10px 20px;
   color: darken($Color1, 25%);
   white-space: pre-wrap;
   text-align: center;

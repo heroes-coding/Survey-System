@@ -37,11 +37,15 @@ class Dash extends Component {
     console.log({authUser, idToken })
     const { error, page } = this.state
     return (
-      <div>
-        <DashboardNav {...this.props} setPage={this.setPage} signOut={this.signOut} />
-        { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
-        {page===SURVEY_EDITOR && idToken==="admin" && <SurveyEditor authUser={authUser} role={idToken} />}
-        {page===USER_EDITOR && idToken==="admin" && <UserEditor authUser={authUser} role={idToken} />}
+      <div className="row dashHolder">
+        <div className='col-sm-3' >
+          <DashboardNav {...this.props} setPage={this.setPage} signOut={this.signOut} />
+        </div>
+        <div className='col-sm-9' >
+          { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
+          {page===SURVEY_EDITOR && idToken==="admin" && <SurveyEditor authUser={authUser} role={idToken} />}
+          {page===USER_EDITOR && idToken==="admin" && <UserEditor authUser={authUser} role={idToken} />}
+        </div>
       </div>
 
     )

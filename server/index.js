@@ -5,6 +5,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const port = process.env.PORT || 5301;
+const axios = require('axios')
 
 const { addSurveyResults, getSurveyIds, addSurvey, getUserFromToken, users, deleteElevatedUser, addOrModifyElevatedUser, addOrModifySurvey, setDefault, getDefault, getSurvey } = require('./firebase')
 
@@ -42,6 +43,19 @@ app.post('/setDefault', async function(req, res) {
   const result = await setDefault(surveyId)
   return res.send(result)
 })
+
+app.get('/ping', async function(req, res) {
+  return res.send("pong")
+})
+
+const pingSelf = async() => {
+  const res = await axios.get('https://studentequity.herokuapp.com/ping')
+  console.log(res.data)
+  setTimeout(pingSelf, 10000)
+}
+pingSelf()
+
+
 
 app.get('/getSurvey/:surveyId', async(req, res) => {
   // TO DO : get id and password, query for user, if exists check if expires, if expires refresh token if not exists return doesn't exist otherwise return id and password in JSON format

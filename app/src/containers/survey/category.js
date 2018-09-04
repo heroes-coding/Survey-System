@@ -30,9 +30,9 @@ const Question = ({ row, id, question, reverse, value, updateSurvey, categoryId,
 
 const Category = ({ showAdvice, advice, links, id: categoryId, name, title, questions, updateSurvey, submitted, validationFailed, answers }) => {
   return (
-    <div className="categoryHolder">
+    <div className="surveyCategory">
       <div className="categoryTitle">{title}</div>
-      <div className='questionHolder'>
+      <div className='answerHolder'>
         <div className="question"></div>
         {answers.map((answer,i) => <div key={i} className="answerHeader">{answer}</div>)}
       </div>

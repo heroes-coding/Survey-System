@@ -29,8 +29,7 @@ class App extends Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-1 col-xl-2"></div>
-            <div className='col-sm-12 col-lg-10 col-xl-8 surveyHolder' id="contentHolder">
+            <div className='col' id="contentHolder">
             <Switch>
               <Route
                 path={LOGIN}
@@ -57,7 +56,6 @@ class App extends Component {
                 render={(props) => <Survey {...props} authUser={authUser} idToken={idToken} />}
               />
             </Switch>
-            <div className="col-lg-1 col-xl-2"></div>
           </div>
         </div>
       </div>

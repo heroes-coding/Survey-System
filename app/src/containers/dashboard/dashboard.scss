@@ -1,9 +1,16 @@
 @import "../../style/variables.scss";
 
+#contentHolder {
+  background: $White;
+  padding: 30px 10px 5px 10px;
+  border: 1px solid $Light;
+}
+
 #dashNav {
   display: flex;
-  justify-content: space-around;
-  margin-top: -20px;
+  flex-direction: column;
+  margin-top: 0px;
+  padding: 10px 0px 30px 0px;
 }
 
 .dashButtonHolder {
@@ -11,7 +18,15 @@
   padding: 5px;
 }
 
+.dashHolder {
+  margin: 0px 0px 0px -30px;
+
+}
+
 .dashButton {
-  background-color: $Highlight;
+  height: 100px;
+  margin: -6px;
+  padding: 0px;
+  background-color: $Color1;
   font-weight: 600;
 }
