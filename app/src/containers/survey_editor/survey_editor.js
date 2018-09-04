@@ -1,135 +1,128 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { populateSurveyDraft } from '../../actions'
 import Survey from '../survey/survey'
-import { defaultSurvey, defaultCategory } from '../../constants'
+import { defaultStandaloneQuestion, defaultSurvey, defaultCategory, defaultLink, defaultQuestion, defaultAnswer } from '../../constants'
 import _ from "lodash"
+import { max } from 'd3'
+import TextField from '../../components/text_field'
+import AnswerField from '../../components/answer_field'
+import CheckBox from '../../components/check_box'
+import QuestionField from '../../components/question_field'
+import MultiLine from '../../components/multi_line'
+import DropDown from '../../components/drop_down'
+import InlineTitleText from '../../components/inline_title_text'
+import { addOrModifySurvey, setDefaultSurvey } from '../auth/auth_functions'
 
-const TextField = ({ name, value, property, placeholder, updateForm }) =>
-  <div className="form-group">
-    <label>{name}</label>
-    <input
-      type="text"
-      className="form-control"
-      id="surveyTitle"
-      value={value || ""}
-      placeholder={placeholder}
-      onChange={event => updateForm(property, event.target.value)}
-      required
-    />
-  </div>
-
-
-
-/*
-  {
-    answers: ["never like me", "once in a while like me", "sometimes like me", "often like me", "always like me"],
-    name: "",
-    title: "Please rate your agreement to the following statements about yourself",
-    questions: {
-      1: { question: "I do my best in my classes.", reverse: false, value: null },
-      2: { question: "I consistently do my school work well.", reverse: false, value: null }
-    }
-*/
-
-const AnswerField = ({ cat, answer, points, placeholder, updateAnswer, deleteAnswer, isOld }) =>
-  <div className="input-group mb-3">
-    <div className="input-group-prepend"><span className="input-group-text">{`${points} point answer:`}</span></div>
-    <input
-      type="text"
-      className="form-control"
-      id={`category${cat}Answer${answer}`}
-      value={answer}
-      onChange={event => updateAnswer(event.target.value)}
-      required
-    ></input>
-    {!isOld&&<button type="button" className="btn btn-danger" onClick={event => updateAnswer(points)}>Delete</button>}
-
-  </div>
-
-const QuestionField = ({ cat, question, reverse, number, updateQuestion, isOld }) =>
-  <div className="input-group mb-3">
-    <div className="input-group-prepend"><span className="input-group-text">{`Question ${number}:`}</span></div>
-    <input
-      type="text"
-      className="form-control"
-      id={`category${cat}Question${number}`}
-      value={question}
-      onChange={event => updateQuestion("question",event.target.value)}
-      required
-    ></input>
-    <button type="button" className="btn btn-light" data-toggle="button" onClick={event => {
-      event.preventDefault()
-      updateQuestion("reverse",!reverse)
-    }} >
-      {reverse ? 'Reverse Encoded' : 'Encoded Normally'}
-    </button>
-    {!isOld&&<button type="button" className="btn btn-danger" onClick={event => updateQuestion("question",number)}>Delete</button>}
-  </div>
-
-const Category = ({ deleteCategory, updateAnswer, name, title, answers, questions, updateCategory, updateQuestion, id, isOld }) =>
+const Category = ({ addQuestion, addLink, addAnswer, updateLink, deleteCategory, links, cutoffScore, advice, kudos, updateAnswer, name, title, answers, questions, updateCategory, updateQuestion, id, isOld }) =>
   <div className="categoryHolder">
-    <div className="input-group mb-3">
-      <div className="input-group-prepend"><span className="input-group-text">Category Name</span></div>
-      <input
-        type="text"
-        className="form-control"
-        id="surveyTitle"
-        value={name}
-        onChange={event => updateCategory(id,"name",event.target.value)}
-        required
-      ></input>
+    <div className="categoryHeader">
+      <h6>{`Category ${id} - ${name}`}</h6>
+      <button className="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target={`#collapse${id}`}>Collapse / Show Category</button>
     </div>
-    <div className="input-group mb-3">
-      <div className="input-group-prepend"><span className="input-group-text">Category Title</span></div>
-      <input
-        type="text"
-        className="form-control"
-        id="surveyTitle"
-        value={title}
-        onChange={event => updateCategory(id,"title",event.target.value)}
-        required
-      ></input>
-    </div>
-    <div className="categoryHeader">Category Answers:</div>
-    {answers.map((a,i) => {
-      return <AnswerField cat={id} answer={a} key={i} points={i+1} updateAnswer={(value) => {
-        updateAnswer(id,i,value)
+    <div className="collapse show" id={`collapse${id}`}>
+      <InlineTitleText value={name} title="Category Name" updateFunction={(value) => updateCategory(id,"name",value)} />
+      <InlineTitleText value={title} title="Category Title" updateFunction={(value) => updateCategory(id,"title",value)} />
+      <div className="categoryHeader">Category Answers:</div>
+      {!isOld && <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => addAnswer(id)}>Add Answer</button>}
+      {answers.map((a,i) => {
+        return <AnswerField isOld={isOld} cat={id} answer={a} key={i} points={i+1} updateAnswer={(value) => {
+          updateAnswer(id,i,value)
+        }}/>
+      })}
+      <div className="categoryHeader">Category Questions:</div>
+      <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => addQuestion(id)}>Add Question</button>
+      {Object.entries(questions).map(([i,q]) => {
+        const { question, reverse } = q
+        return <QuestionField cat={id} isOld={q.isOld} key={i} updateQuestion={(property,value) => {
+          updateQuestion(id,i,property,value)
+        }} question={question} reverse={reverse} number={parseInt(i)}/>
+      })}
+      <InlineTitleText value={cutoffScore} title={`Cutoff Score (1-${answers.length}, can be fractional)`} updateFunction={(value) => {
+        const tail = value[value.length-1]
+        if (value !== "") value = tail === "." ? value : parseFloat(value)
+        if (!isNaN(tail) || tail === '.' || value === "") updateCategory(id,"cutoffScore",value)
       }}/>
-    })}
-    <div className="categoryHeader">Category Questions:</div>
-    {Object.entries(questions).map(([i,q],n) => {
-      const { question, reverse } = q
-      return <QuestionField cat={id} key={n} updateQuestion={(property,value) => {
-        updateQuestion(id,i,property,value)
-      }} question={question} reverse={reverse} number={n+1}/>
-    })}
-    {!isOld && <button type="button" className="btn btn-danger btn-sm btn-block" onClick={() => deleteCategory(id)}>Delete Above Category</button>}
+      <MultiLine text={advice} title="Advice (for scores at or below the cutoff score)" updateFunction={(value) => updateCategory(id,'advice', value) } />
+      <MultiLine text={kudos} title="Compliments / Kudos (for scores above the cutoff score)" updateFunction={(value) => updateCategory(id,'kudos', value) } />
+      <div className="categoryHeader">Links:</div>
+      <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => addLink(id)}>Add Link</button>
+      {links.map((l,i) => {
+        const { goodLink, badLink, name, link } = l
+        return (
+          <div key={i} className="input-group mb-3">
+            <div className="input-group-prepend"><span className="input-group-text">Link text: </span></div>
+            <input
+              type="text"
+              className="form-control"
+              value={name}
+              onChange={event => updateLink(id, i, "name", event.target.value)}
+              required
+            ></input>
+            <div className="input-group-prepend"><span className="input-group-text">Link: </span></div>
+            <input
+              type="text"
+              className="form-control"
+              value={link}
+              onChange={event => updateLink(id, i, "link", event.target.value)}
+              required
+            ></input>
+            <CheckBox label="&nbsp; &nbsp; Low Score Link: " checked={badLink} updateFunction={(checked) => updateLink(id,i,"badLink", checked)} />
+            <CheckBox label="High Score Link: " checked={goodLink} updateFunction={(checked) => updateLink(id,i,"goodLink", checked)} />
+            <button type="button" className="btn btn-danger" onClick={event => updateLink(id,i)}>Del</button>
+          </div>
+        )
+      })}
+
+      {!isOld && <button type="button" className="btn btn-danger btn-sm btn-block" onClick={() => {
+        if (window.confirm(`Are you sure you want to delete the ${name} category?`)) deleteCategory(id)
+        }}>Delete Above Category</button>}
+    </div>
   </div>
 
+const AdditionalQuestions = ({  addSingleAnswer, addSingleQuestion, changeSingleAnswer, changeSingleQuestion, additionalQuestions }) =>
+  <div className="categoryHolder">
+    <div className="categoryHeader">
+      <h6>Additional Standalone Questions</h6>
+      <button className="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseStandalone">Collapse / Show Questions</button>
+    </div>
+    <div className="collapse show" id="collapseStandalone">
+      {Object.entries(additionalQuestions).map(([i,q]) => {
+        const { name, title, answers, isOld } = q
+        i = parseInt(i)
+        return (
+          <div className="additionalQuestion" key={i}>
+            <InlineTitleText value={title} title="Question: " updateFunction={(value) => changeSingleQuestion(i,value)} />
+            {answers.map((a,n) => <AnswerField isOld={isOld} standalone answer={a} key={n} points={i+1} updateAnswer={(value) => {
+              changeSingleAnswer(i,n,value)
+            }}/>)}
+            {!isOld && <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => addSingleAnswer(i)}>Add Answer</button>}
+            {!isOld && <button type="button" className="btn btn-danger btn-sm btn-block" onClick={() =>
+              { changeSingleQuestion(i,i) }}>Delete Above Question</button>}
+          </div>
+        )
+      })}
+      <button type="button" className="btn btn-primary btn-sm btn-block" onClick={addSingleQuestion}>Add New Standalone Multiple Choice Question</button>
 
+    </div>
+  </div>
 
-const Form = ({ addCategory, deleteCategory, updateAnswer, updateForm, submitForm, title, description, id, categories, additionalQuestions, updateCategory, updateQuestion }) =>
+const Form = ({ setDefaultSurvey, isOld, addNewSurvey, addSingleAnswer, addSingleQuestion, changeSingleAnswer, changeSingleQuestion, addQuestion, addLink, addAnswer, updateLink, addCategory, deleteCategory, updateAnswer, updateForm, submitForm, title, description, id, categories, additionalQuestions, updateCategory, updateQuestion }) =>
   <div>
     <form onSubmit={submitForm}>
       <TextField name='Survey Title' value={title} property='title' placeholder='Please enter the title your users will see' updateForm={updateForm} />
-      <TextField name='Survey ID' value={id} property='id' placeholder='Please enter an id for the survey, it will also be the path you input to get to the survey' updateForm={updateForm} />
-      <div className="form-group">
-        <label >Survey Description</label>
-        <textarea
-          className="form-control"
-          id="exampleFormControlTextarea1"
-          onChange={event => updateForm('description', event.target.value)}
-          rows="3"
-          value={description}
-          required
-        />
-      </div>
+      {!isOld && <TextField name='Survey ID' value={id} property='id' placeholder='Please enter an id for the survey, it will also be the path you input to get to the survey' updateForm={updateForm} />}
+      {isOld && <div>{`Survey ID: ${id}`}<br/><br/></div>}
+      <MultiLine text={description} title="Survey Description" updateFunction={(value) => updateForm('description', value) } />
 
-      {Object.entries(categories).map(([i,c]) => <Category deleteCategory={deleteCategory} {...c} id={i} key={i} updateAnswer={updateAnswer} updateCategory={updateCategory} updateQuestion={updateQuestion}/>  )}
-
+      {Object.entries(categories).map(([i,c]) => <Category addQuestion={addQuestion} addLink={addLink} addAnswer={addAnswer} updateLink={updateLink} deleteCategory={deleteCategory} {...c} id={i} key={i} updateAnswer={updateAnswer} updateCategory={updateCategory} updateQuestion={updateQuestion}/>  )}
       <button type="button" className="btn btn-primary btn-sm btn-block" onClick={addCategory}>Add New Category</button>
+
+      <AdditionalQuestions addSingleAnswer={addSingleAnswer} addSingleQuestion={addSingleQuestion} changeSingleAnswer={changeSingleAnswer} changeSingleQuestion={changeSingleQuestion} additionalQuestions={additionalQuestions} />
+      <button type="button" className="btn btn-info btn-sm btn-block" onClick={addNewSurvey}>{`${isOld ? 'Modify' : 'Add'} Above Survey`}</button>
+      {isOld && <button type="button" className="btn btn-primary btn-sm btn-block" onClick={setDefaultSurvey}>Set as default (site root) survey</button>}
+
 
       <div className="input-group mb-3">
         <button className ="btn btn-secondary btn-md" type="submit" name="signup">
@@ -140,64 +133,208 @@ const Form = ({ addCategory, deleteCategory, updateAnswer, updateForm, submitFor
     </form>
   </div>
 
+const getNewKey = (object) => {
+  const newKey = max(Object.keys(object).map(x => parseInt(x)))+1
+  return isNaN(newKey) ? 1 : newKey
+}
 
 class SurveyEditor extends Component {
   updateForm(key, value) {
-    this.setState({[key]: value,})
+    const tempState = this.state.survey
+    tempState[key] = value
+    this.setState({...this.state, survey: tempState, error: null})
+  }
+  addSingleQuestion() {
+    const tempState = this.state.survey
+    const newKey = getNewKey(tempState.additionalQuestions)
+    tempState.additionalQuestions[newKey] = JSON.parse(JSON.stringify(defaultStandaloneQuestion))
+    this.setState({...this.state, survey: tempState, error: null})
+  }
+  addSingleAnswer(q) {
+    const tempState = this.state.survey
+    tempState.additionalQuestions[q].answers.push("")
+    this.setState({...this.state, survey: tempState, error: null})
+  }
+  changeSingleQuestion(q,question) {
+    const tempState = this.state.survey
+    if (typeof question === 'number') delete tempState.additionalQuestions[q]
+    else tempState.additionalQuestions[q].title = question
+    this.setState({...this.state, survey: tempState, error: null})
+  }
+  changeSingleAnswer(q,a,answer) {
+    const tempState = this.state.survey
+    // delete answer
+    if (typeof answer === 'number') tempState.additionalQuestions[q].answers.splice(a,1)
+    else tempState.additionalQuestions[q].answers[a] = answer
+    this.setState({...this.state, survey: tempState, error: null})
   }
   addCategory() {
-    const tempState = {... this.state}
-    const newCategory = _.clone(defaultCategory, true)
-    newCategory.questions = _.clone(defaultCategory.questions,true)
-    newCategory.answers = _.clone(defaultCategory.answers,true)
-    const newKey = Object.keys(this.state.categories).length + 1
+    const tempState = this.state.survey
+    const newCategory = JSON.parse(JSON.stringify(defaultCategory))
+    const newKey = getNewKey(tempState.categories)
     tempState.categories[newKey] = newCategory
-    this.setState(tempState)
+    this.setState({...this.state, survey: tempState, error: null})
+  }
+  addLink(id) {
+    const tempState = this.state.survey
+    tempState.categories[id].links.push(_.clone(defaultLink,true))
+    this.setState({...this.state, survey: tempState, error: null})
+  }
+  addQuestion(id) {
+    const tempState = this.state.survey
+    const newKey = getNewKey(tempState.categories[id].questions)
+
+    tempState.categories[id].questions[newKey] = _.clone(defaultQuestion,true)
+    this.setState({...this.state, survey: tempState, error: null})
+  }
+  addAnswer(id) {
+    const tempState = this.state.survey
+    tempState.categories[id].answers.push(defaultAnswer)
+    this.setState({...this.state, survey: tempState, error: null})
+  }
+  updateLink(id,linkId,key,value) {
+    const tempState = this.state.survey
+    if (!key) tempState.categories[id].links.splice(linkId,1) // no key == delete
+    else tempState.categories[id].links[linkId][key] = value
+    this.setState({...this.state, survey: tempState, error: null})
   }
   deleteCategory(id) {
-    const tempState = {... this.state}
+    const tempState = this.state.survey
     delete tempState.categories[id]
-    this.setState(tempState)
+    this.setState({...this.state, survey: tempState, error: null})
   }
   updateCategory(id,key,value) {
-    const tempState = {... this.state}
+    const tempState = this.state.survey
     tempState.categories[id][key] = value
-    this.setState(tempState)
+    this.setState({...this.state, survey: tempState, error: null})
   }
   updateAnswer(id,i,value) {
-    const tempState = {... this.state}
+    const tempState = this.state.survey
+    // delete answer
     if (typeof value === 'number') tempState.categories[id].answers.splice(value-1,1)
     else tempState.categories[id].answers[i] = value
-    this.setState(tempState)
+    this.setState({...this.state, survey: tempState, error: null})
   }
   updateQuestion(id,i,property,value) {
     // id is category id, i is question id
-    const tempState = _.clone(this.state, true)
+    const tempState = this.state.survey
     if (typeof value === 'number') delete tempState.categories[id].questions[i]
     else tempState.categories[id].questions[i][property] = value
-    this.setState(tempState)
+    this.setState({...this.state, survey: tempState, error: null})
   }
   constructor(props) {
     super(props)
+    this.changeSurvey = this.changeSurvey.bind(this)
+    this.setDefaultSurvey = this.setDefaultSurvey.bind(this)
+    this.addNewSurvey = this.addNewSurvey.bind(this)
+    this.addSingleQuestion = this.addSingleQuestion.bind(this)
+    this.addSingleAnswer= this.addSingleAnswer.bind(this)
+    this.changeSingleQuestion = this.changeSingleQuestion.bind(this)
+    this.changeSingleAnswer= this.changeSingleAnswer.bind(this)
+    this.addLink = this.addLink.bind(this)
+    this.addQuestion = this.addQuestion.bind(this)
+    this.addAnswer = this.addAnswer.bind(this)
     this.addCategory = this.addCategory.bind(this)
+    this.updateLink = this.updateLink.bind(this)
     this.deleteCategory = this.deleteCategory.bind(this)
     this.populateSurveyDraft = this.populateSurveyDraft.bind(this)
     this.updateForm = this.updateForm.bind(this)
     this.updateCategory = this.updateCategory.bind(this)
     this.updateQuestion = this.updateQuestion.bind(this)
     this.updateAnswer = this.updateAnswer.bind(this)
-    this.state = _.clone(defaultSurvey, true)
+    this.copySurvey = this.copySurvey.bind(this)
+    this.state = {
+      survey: JSON.parse(JSON.stringify(defaultSurvey)),
+      isOld: false,
+      error: null,
+      surveyIds: ['New Survey']
+    }
+    axios.get('/getSurveyIds').then(res => {
+      console.log(res)
+      this.setState({...this.state, surveyIds: ['New Survey'].concat(res.data) })
+    })
     this.populateSurveyDraft()
+  }
+  changeSurveyAge(survey, isOld=true) {
+    // mutates survey with isOld modifiers
+    // sets isOld markers throughout survey so that they won't be edited further
+    const categoryKeys = Object.keys(survey.categories)
+    for (let c=0; c < categoryKeys.length; c++) {
+      survey.categories[categoryKeys[c]].isOld = isOld
+      const questionKeys = Object.keys(survey.categories[categoryKeys[c]].questions)
+      for (let q=0; q < questionKeys.length; q++) survey.categories[categoryKeys[c]].questions[questionKeys[q]].isOld = isOld
+    }
+    const additionalKeys = Object.keys(survey.additionalQuestions)
+    for (let q =0; q < additionalKeys.length; q++) survey.additionalQuestions[additionalKeys[q]].isOld = isOld
+  }
+  setDefaultSurvey() {
+    const surveyId = this.state.survey.id
+    setDefaultSurvey(surveyId).then(r => {
+      if (r.data === "okay") this.setState({...this.state, error: `Survey ${surveyId} added as default survey`, isOld: true })
+      else this.setState({...this.state, error: r.data })
+    })
+  }
+  addNewSurvey() {
+    const { survey, isOld } = this.state
+    if (!isOld && this.state.surveyIds.includes(survey.id)) {
+      this.setState({...this.state, error: `Cannot add a second survey with the id: ${survey.id}`})
+      return
+    }
+    this.changeSurveyAge(survey) // mutates survey
+    addOrModifySurvey(survey).then(r => {
+      const survey = this.state.survey
+      if (r.data === "okay") this.setState({...this.state, survey, error: `Survey ${survey.id} successfully added`, isOld: true })
+      else this.setState({...this.state, error: r.data })
+    })
+  }
+  copySurvey() {
+    // copies survey in place, and makes all fields editable again
+    const survey = JSON.parse(JSON.stringify(this.state.survey))
+    this.changeSurveyAge(survey,false)
+    this.setState({...this.state, survey, isOld: false})
+  }
+  changeSurvey(surveyId) {
+    if (surveyId === "New Survey") {
+      this.setState({...this.state,
+            survey: JSON.parse(JSON.stringify(defaultSurvey)),
+            isOld: false,
+            error: null})
+    } else {
+      axios.get(`/getSurvey/${surveyId}`).then(r => {
+        this.setState({...this.state, survey: r.data, isOld: true})
+      })
+    }
   }
   populateSurveyDraft(e) {
     if (e) e.preventDefault()
-    this.props.populateSurveyDraft({... this.state})
+    this.props.populateSurveyDraft({... this.state.survey})
+    this.setState({...this.state, error: null})
   }
   render() {
-    const { categories, additionalQuestions, title, id, description } = this.state
+    const { survey, error, isOld } = this.state
+    const { categories, additionalQuestions, title, id, description } = survey
+
     return (
       <div className="surveyEditor">
+        <DropDown
+          currentSelection={""}
+          name='Select Survey to Edit'
+          id='surveySelector'
+          dropdowns={this.state.surveyIds}
+          updateFunction={(survey) => this.changeSurvey(survey)}
+          renderDropdownName={true}
+          currentID={0}
+        />
+        {isOld && <button type="button" className="btn btn-primary btn-sm btn-block" onClick={this.copySurvey}>Copy to new, editable survey (must change id)</button>}
         <Form
+          isOld={isOld}
+          copySurvey={this.copySurvey}
+          setDefaultSurvey={this.setDefaultSurvey}
+          addNewSurvey={this.addNewSurvey}
+          addSingleAnswer={this.addSingleAnswer}
+          changeSingleAnswer={this.changeSingleAnswer}
+          addSingleQuestion={this.addSingleQuestion}
+          changeSingleQuestion={this.changeSingleQuestion}
           updateAnswer={this.updateAnswer}
           updateQuestion={this.updateQuestion}
           updateForm={this.updateForm}
@@ -205,14 +342,19 @@ class SurveyEditor extends Component {
           submitForm={this.populateSurveyDraft}
           addCategory={this.addCategory}
           deleteCategory={this.deleteCategory}
+          updateLink={this.updateLink}
+          addLink={this.addLink}
+          addQuestion={this.addQuestion}
+          addAnswer={this.addAnswer}
           categories={categories}
           title={title}
           description={description}
           id={id}
           additionalQuestions={additionalQuestions}
         />
+        { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
         <h5>Sample Survey</h5>
-        <Survey />
+        <Survey isSample />
       </div>
     )
   }

@@ -1,13 +1,16 @@
 @import "./style/variables.scss";
 @import "./containers/survey/survey.scss";
+@import "./containers/survey_editor/survey_editor.scss";
 @import "./containers/auth/auth.scss";
 @import "./containers/dashboard/dashboard.scss";
+@import "./containers/user_editor/user_editor.scss";
 
 body {
   background: $Light;
   background-image: url("/sunset.jpg");
   background-attachment: fixed;
   background-position: center bottom;
+  overflow-y: scroll;
 }
 
 .bannerHolder {

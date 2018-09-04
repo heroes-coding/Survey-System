@@ -1,7 +1,7 @@
 import React from 'react'
 import { auth } from './firebase'
 import AuthUserContext from './auth_user_context'
-import { getIdToken } from './auth_functions'
+import { getIdToken, getRole } from './auth_functions'
 import { updateUserInfo } from '../../actions'
 
 const withAuthentication = (Component) => {
@@ -17,10 +17,10 @@ const withAuthentication = (Component) => {
       auth.onAuthStateChanged(authUser => {
         authUser
           ? this.setState({ authUser })
-          : this.setState({ authUser: null, idToken: null })
+          : this.setState({ authUser: null, idToken: null})
         if (authUser) {
-          getIdToken().then((idToken) => {
-            this.setState({ ...this.state, idToken })
+          getRole().then(role => {
+            this.setState({ ...this.state, idToken: role })
           }).catch((error) => {
             console.log("Couldn't get idToken",error)
           })

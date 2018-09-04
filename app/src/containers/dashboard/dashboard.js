@@ -1,30 +1,57 @@
 import React, { Component } from 'react';
-import axios from 'axios'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import withAuthentication from '../auth/with_authentication'
 import DashboardNav from './dash_nav'
 import SurveyEditor from '../survey_editor/survey_editor'
+import UserEditor from '../user_editor/user_editor'
+import { signOut } from '../auth/auth_functions'
+import { LOGIN } from '../../constants/routes'
+import { SURVEY_EDITOR, USER_EDITOR, REPORT_VIEWER } from './dash_nav'
 
 class Dash extends Component {
+  constructor(props) {
+    super(props)
+    this.signOut = this.signOut.bind(this)
+    this.setPage = this.setPage.bind(this)
+    this.state = {
+      page: USER_EDITOR,
+      error: null
+    }
+  }
+  setPage(page) {
+    this.setState({ ...this.state, page })
+  }
+  signOut() {
+    signOut()
+      .then(() => {
+        setTimeout(() => this.props.history.push(LOGIN), 10)
+      }).catch(error => {
+        this.setState({ ...this.state, error })
+      })
+  }
   componentDidMount() {
   }
   render() {
     const { surveyData, authUser, idToken } = this.props
-    console.log({ surveyData, authUser, idToken })
+    console.log({authUser, idToken })
+    const { error, page } = this.state
     return (
       <div>
-        <DashboardNav {...this.props} />
-        <SurveyEditor />
+        <DashboardNav {...this.props} setPage={this.setPage} signOut={this.signOut} />
+        { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
+        {page===SURVEY_EDITOR && idToken==="admin" && <SurveyEditor authUser={authUser} role={idToken} />}
+        {page===USER_EDITOR && idToken==="admin" && <UserEditor authUser={authUser} role={idToken} />}
       </div>
+
     )
   }
 }
 
 function mapStateToProps(state, ownProps, terms) {
-  const { authUser, idToken } = ownProps
+  const { authUser, idToken, history } = ownProps
   const { surveyData } = state
-  return { surveyData, authUser, idToken }
+  return { surveyData, authUser, idToken, history }
 }
 
-export default withRouter(withAuthentication((connect(mapStateToProps,{})(Dash))))
+export default withAuthentication(withRouter((connect(mapStateToProps,{})(Dash))))

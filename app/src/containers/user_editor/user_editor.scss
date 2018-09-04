@@ -1,0 +1,18 @@
+@import "../../style/variables.scss";
+
+.userHolder {
+  margin: 10px 20px 10px 10px;
+  border-bottom: 1px dotted $Color1;
+  padding: 0;
+}
+
+.userHeader {
+  display: flex;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.roleSelector {
+  display: flex;
+  justify-content: space-around;
+}

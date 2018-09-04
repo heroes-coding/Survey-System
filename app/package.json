@@ -6,6 +6,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
+    "d3": "^5.7.0",
     "firebase": "^5.4.1",
     "firebaseui": "^3.4.0",
     "font-awesome": "^4.7.0",

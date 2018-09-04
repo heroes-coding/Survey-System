@@ -7,7 +7,7 @@ const RadioButton = ({ id, value, reverse, categoryId, updateSurvey }) => {
       <input
         type="radio"
         className="form-check-input"
-        name={`optradio ${id}`}
+        name={`optradio ${id} ${categoryId}`}
         onClick={() => {
           updateSurvey(categoryId, id, value)
         }}

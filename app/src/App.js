@@ -25,7 +25,7 @@ class App extends Component {
       <div className='container-fluid' >
           <div className="row">
             <div className="bannerHolder">
-              <img className="banner" src="banner.png" />
+              <img className="banner" src="/banner.png" />
             </div>
           </div>
           <div className="row">
@@ -48,7 +48,10 @@ class App extends Component {
                 path={SIGN_UP}
                 render={(props) => <SignUp {...props} authUser={authUser} idToken={idToken} />}
               />
-              {/* <Route path="/players/:id" component={PlayerPage} /> */}
+              <Route
+                path="/surveys/:id"
+                render={(props) => <Survey {...props} authUser={authUser} idToken={idToken} />}
+              />
               <Route
                 path="/"
                 render={(props) => <Survey {...props} authUser={authUser} idToken={idToken} />}

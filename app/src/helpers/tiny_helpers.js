@@ -12,6 +12,6 @@ export const starlog = (m) => {
   console.log(`\n${s}\n*** ${m} ***\n${s}\n`)
 }
 
-const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")
+const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})")
 
 export const passwordIsStrong = (p) => strongRegex.test(p)

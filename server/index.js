@@ -6,6 +6,8 @@ const app = express()
 const bodyParser = require('body-parser')
 const port = process.env.PORT || 5301;
 
+const { addSurveyResults, getSurveyIds, addSurvey, getUserFromToken, users, deleteElevatedUser, addOrModifyElevatedUser, addOrModifySurvey, setDefault, getDefault, getSurvey } = require('./firebase')
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -16,6 +18,87 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const staticBuildPath = path.resolve(__dirname, '../app/build')
 if (fs.existsSync(staticBuildPath)) app.use(express.static(staticBuildPath))
 
+app.post('/getRoleFromIdToken', async function(req, res) {
+  const { idToken } = req.body
+  const user = await getUserFromToken(idToken)
+  return res.send(user ? user.role : "student")
+})
+
+app.get('/getUsers', async function(req, res) {
+  return res.send(Object.values(users).map(x => {return {email: x.email, name: x.name, role: x.role}}))
+})
+
+app.get('/getDefault', async function(req, res) {
+  return res.send(getDefault())
+})
+
+app.get('/getSurveyIds', async function(req, res) {
+  return res.send(getSurveyIds())
+})
+
+app.post('/setDefault', async function(req, res) {
+  const { adminIdToken, surveyId } = req.body
+  if (!isAdmin(adminIdToken)) return res.send("Nope")
+  const result = await setDefault(surveyId)
+  return res.send(result)
+})
+
+app.get('/getSurvey/:surveyId', async(req, res) => {
+  // TO DO : get id and password, query for user, if exists check if expires, if expires refresh token if not exists return doesn't exist otherwise return id and password in JSON format
+  // this is for automatic logins
+  let { surveyId } = req.params
+  console.log(req.params,{surveyId})
+  let survey = await getSurvey(surveyId)
+  console.log({survey})
+  res.send(survey)
+})
+
+app.post('/addSurveyResults', async function(req, res) {
+  const { surveyId, results, user} = req.body
+  try {
+    const result = await addSurveyResults(surveyId, results, user.studentId)
+    return res.send(result)
+  } catch (e) {
+    return res.send(e.message)
+  }
+})
+
+/*
+setDefault,
+getDefault,
+getSurvey
+*/
+
+
+const isAdmin = async(adminIdToken) => {
+  let promise = new Promise(async(resolve, reject) => {
+    const user = await getUserFromToken(adminIdToken)
+    if (!user || user.role !=="admin") resolve(false)
+    else resolve(true)
+  })
+  return promise
+}
+
+app.post('/addOrModifySurvey', async function(req, res) {
+  const { adminIdToken, survey } = req.body
+  if (!isAdmin(adminIdToken)) return res.send("Nope")
+  const result = await addOrModifySurvey(survey)
+  return res.send(result)
+})
+
+app.post('/addOrModifyElevatedUser', async function(req, res) {
+  const { adminIdToken, user } = req.body
+  if (!isAdmin(adminIdToken)) return res.send("Nope")
+  const result = await addOrModifyElevatedUser(user)
+  return res.send(result)
+})
+
+app.post('/deleteElevatedUser', async function(req, res) {
+  const { adminIdToken, user } = req.body
+  if (!isAdmin(adminIdToken)) return res.send("Nope")
+  const result = await deleteElevatedUser(user.email)
+  return res.send(result)
+})
 
 
 app.use(function(req, res, next) {

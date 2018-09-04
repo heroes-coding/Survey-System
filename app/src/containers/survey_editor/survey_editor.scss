@@ -1,0 +1,73 @@
+@import "../../style/variables.scss";
+
+
+.btn-block {
+  margin: 10px 0 15px 0;
+  height: 25px;
+  padding: 0px;
+}
+
+.btn-primary {
+  background-color: $Color1;
+}
+
+.categoryHolder {
+  border: 1px solid $Color1;
+  border-radius: 5px;
+  margin: 0px 0 15px 0;
+  padding: 20px 10px 10px 10px;
+}
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+
+.dropdown-menu.show {
+    display: block;
+    max-height: 30em;
+    width: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    line-height: 1em;
+    font-size: 0.9em;
+}
+
+.dropdown-menu {
+    z-index: 1000;
+    background-clip: padding-box;
+
+}
+
+form.input-group.filterGroup {
+    background-color: lighten($Dark,5%);
+    border: 1px solid $Dark;
+    margin: auto;
+    padding: 0px 2px;
+    border-radius: 5px;
+}
+
+
+.iconLabel {
+  color:white;
+  font-family: 'Roboto Mono', monospace;
+  vertical-align: bottom !important;
+  margin: 0px 5px;
+  font-size: 1.05em;
+  font-weight: normal;
+  color: white;
+}
+
+.iconFilter {
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    max-height:35px;
+    margin: 0px 2px !important;
+    padding: 0px;
+    min-height: 34px;
+    max-height: 34px;
+    font-size: 0.85em;
+}

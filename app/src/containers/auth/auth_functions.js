@@ -1,4 +1,108 @@
 import { auth } from './firebase';
+import axios from 'axios'
+window.axios = axios
+
+export const getUsers = async() => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const res = await axios.get('/getUsers')
+      if (res.status === 200) resolve(res.data)
+      else resolve (null)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+// Get user data
+export const getRole = async() => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const idToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/getRoleFromIdToken', {idToken})
+      if (res.status === 200) resolve(res.data)
+      else resolve ("student")
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
+export const addOrModifySurvey = async(survey) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const idToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/addOrModifySurvey', {adminIdToken: idToken, survey })
+      resolve(res)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
+export const setDefaultSurvey = async(surveyId) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const idToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/setDefault', {adminIdToken: idToken, surveyId })
+      resolve(res)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
+export const addOrModifyElevatedUser = async(user) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const idToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/addOrModifyElevatedUser', {adminIdToken: idToken, user })
+      resolve(res)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
+export const addSurveyResults = async(surveyId, results, user) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const res = await axios.post('addSurveyResults', { surveyId, results, user })
+      resolve(res)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
+export const deleteElevatedUser = async(user) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const idToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/deleteElevatedUser', {adminIdToken: idToken, user })
+      resolve(res)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
+
+// deleteElevatedUser
+
 
 // Sign Up
 export const createUserWithEmailAndPassword = (email, password) =>
