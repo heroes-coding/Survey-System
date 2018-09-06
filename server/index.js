@@ -44,14 +44,17 @@ app.post('/setDefault', async function(req, res) {
   return res.send(result)
 })
 
+// THIS (SELF-PINGING) IS TO KEEP THE HEROKU FREE SERVER ALIVE, HOWEVER IT WILL USE UP THE FREE PLAN'S MINUTES IN ABOUT 20 DAYS
+// UNLESS A CREDIT CARD IS PUT ON FILE
+
 app.get('/ping', async function(req, res) {
   return res.send("pong")
 })
 
 const pingSelf = async() => {
   const res = await axios.get('https://studentequity.herokuapp.com/ping')
-  console.log(res.data)
-  setTimeout(pingSelf, 10000)
+  if (res.data !== "pong") console.log(res.data)
+  setTimeout(pingSelf, 600000) // ping every ten minutes indefinitely
 }
 pingSelf()
 
@@ -70,7 +73,7 @@ app.get('/getSurvey/:surveyId', async(req, res) => {
 app.post('/addSurveyResults', async function(req, res) {
   const { surveyId, results, user} = req.body
   try {
-    const result = await addSurveyResults(surveyId, results, user.studentId)
+    const result = await addSurveyResults(surveyId, results, user)
     return res.send(result)
   } catch (e) {
     return res.send(e.message)

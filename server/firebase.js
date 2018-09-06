@@ -120,7 +120,7 @@ const surveyObserver = surveysQuery.onSnapshot(querySnapshot => {
 
 let defaultSurvey
 const initializeDefault = async() => {
-  firestore.collection("surveys").doc("default").get().then(doc => {
+  firestore.collection("default").doc("default").get().then(doc => {
       firestore.collection("surveys").doc(doc.data().default).get().then(async(doc) => {
           if (!doc.exists) defaultSurvey = null
           else defaultSurvey = doc.data()
@@ -134,7 +134,7 @@ initializeDefault()
 
 const setDefault = async(surveyId) => {
   let promise = new Promise(async(resolve, reject) => {
-    firestore.collection("surveys").doc("default").set({ default: surveyId })
+    firestore.collection("default").doc("default").set({ default: surveyId })
       .then(() => {
         firestore.collection("surveys").doc(surveyId).get().then(doc => {
             if (!doc.exists) defaultSurvey = null
@@ -178,18 +178,18 @@ const addOrModifySurvey = (survey) => {
 RESULTS
 */
 
-const addSurveyResults = async(surveyId, results, userId) => {
+const addSurveyResults = async(surveyId, results, { firstName, lastName, studentId }) => {
   // Adding a survey result should:
   // 1) Add to the survey results node
   // 2) Update (or create) a user's survey history
-  console.log({surveyId, results, userId})
   let promise = new Promise(async(resolve, reject) => {
     const surveyResultsRef = rt_database.ref('surveyResults').child(surveyId).push()
-    const userResultsRef = rt_database.ref('userResults').child(userId || 'anon').push()
+    const userResultsIdRef = rt_database.ref('userResultsById').child(studentId || 'anon').push()
+    const userResultsFullNameRef = rt_database.ref('userResultsByFullName').child(`${lastName} ||| ${firstName}` || 'anon').push()
     const surveyPromise = surveyResultsRef.set(results)
-    const userPromise = userResultsRef.set(results)
-
-    Promise.all([surveyPromise,userPromise]).then(() => {
+    const userIdPromise = userResultsIdRef.set(results)
+    const userFullNamePromise = userResultsFullNameRef.set(results)
+    Promise.all([surveyPromise,userIdPromise, userFullNamePromise]).then(() => {
       resolve('okay')
     }).catch(e => {
       reject(e)

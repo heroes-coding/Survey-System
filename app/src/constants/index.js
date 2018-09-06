@@ -36,7 +36,8 @@ export const defaultSurvey = {
     },
     categories: {
       1: JSON.parse(JSON.stringify(defaultCategory))
-    }
+    },
+    positiveSuccess: "You did well on [P].  Great job!",
+    negativeSuccess: "You could use some help on [N].",
+    overallSuccess: "Please see the advice boxes above for more advice and helpful resources!"
 }
-
-console.log({defaultSurvey})

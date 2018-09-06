@@ -135,24 +135,28 @@ const AdditionalQuestions = ({  addSingleAnswer, addSingleQuestion, changeSingle
     </div>
   </div>
 
-const Form = ({ setDefaultSurvey, isOld, addNewSurvey, addSingleAnswer, addSingleQuestion, changeSingleAnswer, changeSingleQuestion, addQuestion, addLink, addAnswer, updateLink, addCategory, deleteCategory, updateAnswer, updateForm, submitForm, title, description, id, categories, additionalQuestions, updateCategory, updateQuestion }) =>
+const Form = ({ overallSuccess, positiveSuccess, negativeSuccess, setDefaultSurvey, isOld, addNewSurvey, addSingleAnswer, addSingleQuestion, changeSingleAnswer, changeSingleQuestion, addQuestion, addLink, addAnswer, updateLink, addCategory, deleteCategory, updateAnswer, updateForm, submitForm, title, description, id, categories, additionalQuestions, updateCategory, updateQuestion }) =>
   <div>
-    <form onSubmit={submitForm}>
+    <form onSubmit={addNewSurvey}>
       <TextField name='Survey Title' value={title} property='title' placeholder='Please enter the title your users will see' updateForm={updateForm} />
       {!isOld && <TextField name='Survey ID' value={id} property='id' placeholder='Please enter an id for the survey, it will also be the path you input to get to the survey' updateForm={updateForm} />}
       {isOld && <div>{`Survey ID: ${id}`}<br/><br/></div>}
       <MultiLine text={description} title="Survey Description" updateFunction={(value) => updateForm('description', value) } />
+      <MultiLine text={positiveSuccess} title="Positive portion of success message (must include [P] where you want the categories scored above the cutoff to show up)" updateFunction={(value) => updateForm('positiveSuccess', value) } />
+      <MultiLine text={negativeSuccess} title="Negative portion of success message (must include [N] where you want the categories scored at or below the cutoff to show up).  Try not to use a transition, as there may be no positive results." updateFunction={(value) => updateForm('negativeSuccess', value) } />
+      <MultiLine text={overallSuccess} title="The rest of the success message (will always show up, the positive or negative portion might not)" updateFunction={(value) => updateForm('overallSuccess', value) } />
 
       {Object.entries(categories).map(([i,c]) => <Category addQuestion={addQuestion} addLink={addLink} addAnswer={addAnswer} updateLink={updateLink} deleteCategory={deleteCategory} {...c} id={i} key={i} updateAnswer={updateAnswer} updateCategory={updateCategory} updateQuestion={updateQuestion}/>  )}
       <button type="button" className="btn btn-primary btn-sm btn-block" onClick={addCategory}>Add New Category</button>
 
       <AdditionalQuestions addSingleAnswer={addSingleAnswer} addSingleQuestion={addSingleQuestion} changeSingleAnswer={changeSingleAnswer} changeSingleQuestion={changeSingleQuestion} additionalQuestions={additionalQuestions} />
-      <button type="button" className="btn btn-info btn-sm btn-block" onClick={addNewSurvey}>{`${isOld ? 'Modify' : 'Add'} Above Survey`}</button>
       {isOld && <button type="button" className="btn btn-primary btn-sm btn-block" onClick={setDefaultSurvey}>Set as default (site root) survey</button>}
+
+      <button type="submit" className="btn btn-info btn-sm btn-block" >{`${isOld ? 'Modify' : 'Add'} Above Survey`}</button>
 
 
       <div className="input-group mb-3">
-        <button className ="btn btn-secondary btn-md" type="submit" name="signup">
+        <button className ="btn btn-secondary btn-md" type="button" name="signup" onClick={submitForm}>
           Update Sample Survey
         </button>
       </div>
@@ -312,7 +316,8 @@ class SurveyEditor extends Component {
       else this.setState({...this.state, error: r.data })
     })
   }
-  addNewSurvey() {
+  addNewSurvey(e) {
+    e.preventDefault()
     const { survey, isOld } = this.state
     if (!isOld && this.state.surveyIds.includes(survey.id)) {
       this.setState({...this.state, error: `Cannot add a second survey with the id: ${survey.id}`})
@@ -325,7 +330,7 @@ class SurveyEditor extends Component {
         ...this.state,
         survey,
         error:
-        `Survey ${survey.id} successfully added`,
+        `Survey ${survey.id} successfully ${this.state.isOld ? 'modified' : 'added'}.`,
         isOld: true,
         surveyIds: isOld ? this.state.surveyIds : this.state.surveyIds.concat([survey.id])
       })
@@ -357,7 +362,7 @@ class SurveyEditor extends Component {
   }
   render() {
     const { survey, error, isOld } = this.state
-    const { categories, additionalQuestions, title, id, description } = survey
+    const { overallSuccess, positiveSuccess, negativeSuccess, categories, additionalQuestions, title, id, description } = survey
 
     return (
       <div className="surveyEditor">
@@ -396,6 +401,9 @@ class SurveyEditor extends Component {
           description={description}
           id={id}
           additionalQuestions={additionalQuestions}
+          positiveSuccess={positiveSuccess}
+          negativeSuccess={negativeSuccess}
+          overallSuccess={overallSuccess}
         />
         { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
         <h5>Sample Survey</h5>

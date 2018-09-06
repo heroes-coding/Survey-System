@@ -55,7 +55,7 @@ const Category = ({ showAdvice, advice, links, id: categoryId, name, title, ques
             />
           )
       })}
-      {!!showAdvice && <Suggestions advice={advice} links={links} />}
+      {submitted && <Suggestions advice={advice} links={links} />}
     </div>
   )
 }

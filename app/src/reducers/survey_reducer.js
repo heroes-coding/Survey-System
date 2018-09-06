@@ -52,7 +52,6 @@ export default function(state = initialState, action) {
     newState.totalQuestionsCount = totalQuestionsCount
     newState.unansweredQuestionsCount = unansweredQuestionsCount
     newState.averageScores = averageScores
-    console.log({ totalQuestionsCount, unansweredQuestionsCount, averageScores })
     return newState
   }
   return state

@@ -28,7 +28,7 @@ class App extends Component {
     const surveyData = this.props.surveyData
     const additionalQuestions = Object.entries(surveyData.additionalQuestions).map(a => [parseInt(a[0]),a[1].value])
     const categories = Object.entries(surveyData.categories).map(c => [parseInt(c[0]),Object.entries(c[1].questions).map(q => [parseInt(q[0]),q[1].value])] )
-    const results = { additionalQuestions, categories }
+    const results = { firstName, lastName, studentId, additionalQuestions, categories, id: surveyData.id, time: (new Date()).getTime() }
     addSurveyResults(surveyData.id, results, { firstName, lastName, studentId }).then((res) => {
       if (res.data ==="okay") this.setState({... this.state, error: "Survey successfully submitted!"})
       else this.setState({... this.state, validationFailed: false, formSubmitted: false, error: res.data})
@@ -46,23 +46,34 @@ class App extends Component {
     let result
     if (surveyId) result = await axios.get(`/getSurvey/${surveyId}`)
     else result = await axios.get(`/getDefault`)
-    console.log(result.data)
     this.props.populateSurveyDraft(result.data)
   }
   render() {
     const { isDemo, surveyData } = this.props
-    const { averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = surveyData
-    const { validationFailed, formSubmitted, error } = this.state
-    console.log({ formSubmitted })
+    const { overallSuccess, positiveSuccess, negativeSuccess, averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = surveyData
+    let { validationFailed, formSubmitted, error } = this.state
+    const positiveCategories = []
+    const negativeCategories = []
+    // formSubmitted = true // comment this out after testing
     return (
       <div className="row">
         <div className='col-lg-1 col-xl-2' />
-        <div className='col-sm-12 col-lg-10 col-xl-8 surveyHolder' id="contentHolder">
+        <div className='col-sm-12 col-lg-10 col-xl-8 surveyHolder'>
           <h4 className="surveyTitle">{title}</h4>
           <div className="surveyDescription">{description}</div>
 
           {Object.entries(categories).map(entry => {
             const [ id, c ] = entry
+            let advice
+            let links
+            const lowScore = averageScores[id] <= c.cutoffScore
+            if (formSubmitted) {
+              // only need to calculate if already submitted
+              advice = lowScore ? c.advice : c.kudos
+              links = c.links.filter(l => lowScore && l.badLink || !lowScore && l.goodLink)
+              if (lowScore) negativeCategories.push(c.name)
+              else positiveCategories.push(c.name)
+            }
             const showAdvice = averageScores[id] <= c.cutoffScore
             return (
               <Category
@@ -74,9 +85,8 @@ class App extends Component {
                 title={c.title}
                 questions={c.questions}
                 updateSurvey={this.updateSurvey}
-                advice={c.advice}
-                links={c.links}
-                showAdvice={showAdvice}
+                advice={advice}
+                links={links}
                 submitted={this.state.formSubmitted}
               />
             )
@@ -121,6 +131,9 @@ class App extends Component {
               </button>
             </div>
           </form>
+          { formSubmitted && <div className="alert alert-info" role="alert">
+            {`${getMessage(positiveSuccess,'[P]', positiveCategories)}  ${getMessage(negativeSuccess,'[N]', negativeCategories)}  ${overallSuccess}`}
+          </div> }
           { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
         </div>
         <div className='col-lg-1 col-xl-2' />
@@ -128,6 +141,17 @@ class App extends Component {
     );
   }
 }
+
+const getMessage = (message, placeholder, list) => {
+  const n = list.length
+  if (n===0) return ""
+  let names
+  if (n===1) names = list[0]
+  else if (n===2) names = `${list[0]} and ${list[1]}`
+  else names = `${list.slice(0,list[n-2]).join(", ")}, and ${list[n-1]}`
+  return message.replace(placeholder,names)
+}
+
 
 function mapStateToProps(state, ownProps, terms) {
   const { surveyData } = state
