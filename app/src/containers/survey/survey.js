@@ -50,7 +50,8 @@ class App extends Component {
   }
   render() {
     const { isDemo, surveyData } = this.props
-    const { overallSuccess, positiveSuccess, negativeSuccess, averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = surveyData
+    console.log({surveyData})
+    const { overallSuccess, shuffledCategoryKeys, shuffledStandaloneKeys, positiveSuccess, negativeSuccess, averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = surveyData
     let { validationFailed, formSubmitted, error } = this.state
     const positiveCategories = []
     const negativeCategories = []
@@ -62,8 +63,8 @@ class App extends Component {
           <h4 className="surveyTitle">{title}</h4>
           <div className="surveyDescription">{description}</div>
 
-          {Object.entries(categories).map(entry => {
-            const [ id, c ] = entry
+          {shuffledCategoryKeys.map(id => {
+            const c = categories[id]
             let advice
             let links
             const lowScore = averageScores[id] <= c.cutoffScore
@@ -84,6 +85,7 @@ class App extends Component {
                 name={c.name}
                 title={c.title}
                 questions={c.questions}
+                shuffledQuestionKeys ={c.shuffledQuestionKeys}
                 updateSurvey={this.updateSurvey}
                 advice={advice}
                 links={links}
@@ -96,6 +98,7 @@ class App extends Component {
             id="multiple"
             validationFailed={validationFailed}
             questions={additionalQuestions}
+            shuffledStandaloneKeys={shuffledStandaloneKeys}
             updateSurvey={this.updateSurvey}
           />
           {!!unansweredQuestionsCount&&validationFailed&&<div className="alert alert-info" role="alert">
@@ -115,9 +118,9 @@ class App extends Component {
               <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, firstName: e.target.value})} placeholder="First / Given Name" required />
               <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, lastName: e.target.value})} placeholder="Last / Family Name" required />
               <div className="input-group-prepend">
-                <span className="input-group-text">SRJC ID #</span>
+                <span className="input-group-text">SRJC ID # (optional)</span>
               </div>
-              <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, studentId: e.target.value})} placeholder="(Starts with an 8)" />
+              <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, studentId: e.target.value})} placeholder="Starts with an 8, no spaces" pattern="([0-9]{9})?" />
               <button className="btn btn-secondary btn-md"
                 type="submit"
                 disabled={formSubmitted}

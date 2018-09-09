@@ -28,7 +28,7 @@ const Question = ({ row, id, question, reverse, value, updateSurvey, categoryId,
   )
 }
 
-const Category = ({ showAdvice, advice, links, id: categoryId, name, title, questions, updateSurvey, submitted, validationFailed, answers }) => {
+const Category = ({ shuffledQuestionKeys, showAdvice, advice, links, id: categoryId, name, title, questions, updateSurvey, submitted, validationFailed, answers }) => {
   return (
     <div className="surveyCategory">
       <div className="categoryTitle">{title}</div>
@@ -36,8 +36,8 @@ const Category = ({ showAdvice, advice, links, id: categoryId, name, title, ques
         <div className="question"></div>
         {answers.map((answer,i) => <div key={i} className="answerHeader">{answer}</div>)}
       </div>
-      {Object.entries(questions).map((entry,row) => {
-        const [ id, q ] = entry
+      {shuffledQuestionKeys.map((id,row) => {
+        const q = questions[id]
         const { question, reverse, value } = q
           return (
             <Question

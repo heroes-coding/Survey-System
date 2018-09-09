@@ -1,5 +1,6 @@
 import _ from "lodash"
 import { UPDATE_SURVEY, POPULATE_SURVEY } from '../actions'
+import { shuffle } from 'd3'
 
 //import { UPDATE_SURVEY } from '../actions'
 let initialState = {
@@ -9,7 +10,9 @@ let initialState = {
   additionalQuestions: {
   },
   categories: {
-  }
+  },
+  shuffledCategoryKeys:[],
+  shuffledStandaloneKeys:[]
 }
 
 const getQuestionCounts = (surveyData) => {
@@ -39,7 +42,15 @@ initialState = { ...initialState, ...getQuestionCounts(initialState)}
 export default function(state = initialState, action) {
   let newState
   if (action.type === POPULATE_SURVEY) {
+    // randomize order here
     newState = action.newSurvey
+    newState.shuffledCategoryKeys = shuffle(Object.keys(newState.categories))
+    for (let c=0; c < newState.shuffledCategoryKeys.length; c++) {
+      const key = newState.shuffledCategoryKeys[c]
+      const category = newState.categories[key]
+      category.shuffledQuestionKeys = shuffle(Object.keys(category.questions))
+    }
+    newState.shuffledStandaloneKeys = shuffle(Object.keys(newState.additionalQuestions))
   } else if (action.type === UPDATE_SURVEY) {
     const { categoryId, questionId, value } = action
     newState = _.cloneDeep(state)

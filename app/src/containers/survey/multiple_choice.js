@@ -21,10 +21,10 @@ const Question = ({ row, id, showAnswer, question, questionClass, reverse, value
   </div>
 
 
-const MultipleChoice = ({ questions, updateSurvey, submitted, validationFailed, advice, links }) =>
+const MultipleChoice = ({ shuffledStandaloneKeys, questions, updateSurvey, submitted, validationFailed, advice, links }) =>
   <div className="multipleChoiceHolder">
-    {Object.entries(questions).map(entry => {
-      const [ id, q ] = entry
+    {shuffledStandaloneKeys.map(id => {
+      const q = questions[id]
       const { title, answers, value, reverse } = q
         return (
           <Question
