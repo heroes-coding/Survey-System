@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const port = process.env.PORT || 5301;
 const axios = require('axios')
 
-const { addSurveyResults, getSurveyIds, addSurvey, getUserFromToken, users, deleteElevatedUser, addOrModifyElevatedUser, addOrModifySurvey, setDefault, getDefault, getSurvey } = require('./firebase')
+const {   getSurveyResults, getUserLists, getUserResults,addSurveyResults, getSurveyIds, addSurvey, getUserFromToken, users, deleteElevatedUser, addOrModifyElevatedUser, addOrModifySurvey, setDefault, getDefault, getSurvey } = require('./firebase')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -19,6 +19,26 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const staticBuildPath = path.resolve(__dirname, '../app/build')
 if (fs.existsSync(staticBuildPath)) app.use(express.static(staticBuildPath))
 
+app.post('/getSurveyResults', async function(req, res) {
+  const { adminIdToken, surveyId } = req.body
+  if (!isCoach(adminIdToken)) return res.send("Nope")
+  return res.send(getSurveyResults(surveyId))
+})
+
+app.post('/getUserLists', async function(req, res) {
+  const { adminIdToken } = req.body
+  if (!isCoach(adminIdToken)) return res.send("Nope")
+  return res.send(getUserLists())
+})
+
+app.post('/getUserResults', async function(req, res) {
+  const { adminIdToken, getById, id } = req.body
+  if (!isCoach(adminIdToken)) return res.send("Nope")
+  return res.send(getUserResults(getById,id))
+})
+
+
+
 app.post('/getRoleFromIdToken', async function(req, res) {
   const { idToken } = req.body
   const user = await getUserFromToken(idToken)
@@ -26,6 +46,7 @@ app.post('/getRoleFromIdToken', async function(req, res) {
 })
 
 app.get('/getUsers', async function(req, res) {
+  // these are authorized users
   return res.send(Object.values(users).map(x => {return {email: x.email, name: x.name, role: x.role}}))
 })
 
@@ -85,6 +106,15 @@ setDefault,
 getDefault,
 getSurvey
 */
+
+const isCoach = async(adminIdToken) => {
+  let promise = new Promise(async(resolve, reject) => {
+    const user = await getUserFromToken(adminIdToken)
+    if (!user || (user.role !=="coach" && user.role !== "admin")) resolve(false)
+    else resolve(true)
+  })
+  return promise
+}
 
 
 const isAdmin = async(adminIdToken) => {

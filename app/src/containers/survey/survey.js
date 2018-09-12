@@ -5,6 +5,7 @@ import { updateSurvey, populateSurveyDraft } from '../../actions'
 import Category from './category'
 import MutipleChoice from './multiple_choice'
 import { addSurveyResults } from '../auth/auth_functions'
+import { getMessage } from '../../helpers/tiny_helpers'
 
 class App extends Component {
   constructor(props) {
@@ -50,7 +51,6 @@ class App extends Component {
   }
   render() {
     const { isDemo, surveyData } = this.props
-    console.log({surveyData})
     const { overallSuccess, shuffledCategoryKeys, shuffledStandaloneKeys, positiveSuccess, negativeSuccess, averageScores, title, description, categories, additionalQuestions, unansweredQuestionsCount, totalQuestionsCount } = surveyData
     let { validationFailed, formSubmitted, error } = this.state
     const positiveCategories = []
@@ -145,15 +145,6 @@ class App extends Component {
   }
 }
 
-const getMessage = (message, placeholder, list) => {
-  const n = list.length
-  if (n===0) return ""
-  let names
-  if (n===1) names = list[0]
-  else if (n===2) names = `${list[0]} and ${list[1]}`
-  else names = `${list.slice(0,list[n-2]).join(", ")}, and ${list[n-1]}`
-  return message.replace(placeholder,names)
-}
 
 
 function mapStateToProps(state, ownProps, terms) {

@@ -5,6 +5,7 @@ import withAuthentication from '../auth/with_authentication'
 import DashboardNav from './dash_nav'
 import SurveyEditor from '../survey_editor/survey_editor'
 import UserEditor from '../user_editor/user_editor'
+import Reports from '../reports/reports'
 import { signOut } from '../auth/auth_functions'
 import { LOGIN } from '../../constants/routes'
 import { SURVEY_EDITOR, USER_EDITOR, REPORT_VIEWER } from './dash_nav'
@@ -15,7 +16,7 @@ class Dash extends Component {
     this.signOut = this.signOut.bind(this)
     this.setPage = this.setPage.bind(this)
     this.state = {
-      page: USER_EDITOR,
+      page: REPORT_VIEWER,
       error: null
     }
   }
@@ -34,7 +35,6 @@ class Dash extends Component {
   }
   render() {
     const { surveyData, authUser, idToken } = this.props
-    console.log({authUser, idToken })
     const { error, page } = this.state
     return (
       <div className="row dashHolder">
@@ -45,6 +45,7 @@ class Dash extends Component {
           { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
           {page===SURVEY_EDITOR && idToken==="admin" && <SurveyEditor authUser={authUser} role={idToken} />}
           {page===USER_EDITOR && idToken==="admin" && <UserEditor authUser={authUser} role={idToken} />}
+          {page===REPORT_VIEWER && (idToken==="admin" || idToken==="coach") && <Reports authUser={authUser} role={idToken} />}
         </div>
       </div>
 

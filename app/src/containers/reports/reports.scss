@@ -1,0 +1,200 @@
+@import "../../style/variables.scss";
+
+.statCat {
+  padding: 10px 0px;
+}
+
+.statCatHeader {
+  font-size: 1.2em;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 0 25%;
+}
+
+.resultQuestionHolder {
+  font-size: 0.7em;
+  padding: 0px 10px;
+}
+
+button.catExpander.collapsed:before
+{
+    content:'Show Questions & Answers';
+    display:block;
+}
+
+button.catExpander:before
+{
+    content:'Hide Questions & Answers';
+    display:block;
+}
+
+
+
+
+.resultQuestion {
+  font-size: 1.5em;
+}
+
+
+.statCat {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0 0 0 -50px;
+}
+
+.catGraph {
+  flex: 0 1 auto;
+  width: 50%;
+  margin: 0px 0px 0 -50px;
+  padding: 45px 0 0 0;
+}
+
+.catSummaryStats {
+  padding: 0 10px;
+  align-items: center;
+  width: 40%;
+}
+
+.catStat {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0px 0 25%;
+  flex: 0 1 auto;
+  min-width: 200px;
+}
+
+.scoreLabel {
+  flex-basis: 0;
+  flex-grow: 1;
+}
+.scoreValue {
+  flex-basis: 0;
+  flex-grow: 1;
+  font-weight: 700;
+}
+
+.qStat {
+  display: flex;
+  flex-direction: row;
+  min-width: 75px;
+  font-size: 1.1em;
+}
+
+.questionStatHolder {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.questionResults {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 10px 0 10px;
+  background: #f9f9f9;
+  margin: 10px 10px 10px 10px;
+  border: 1px solid $Light;
+}
+
+.answersHolder {
+  display: flex;
+  text-align: center;
+  padding: 20px 0px 0px 20px;
+}
+
+.answerTitle {
+  font-weight: 600;
+  margin-top: 10px;
+}
+.answerHolder {
+  font-size: 0.8em;
+}
+
+.resultQuestion {
+  flex-basis: 0;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.barHolder {
+  max-width: 50%;
+  flex-basis: 0;
+  flex-grow: 1;
+  margin-bottom: 20px;
+}
+
+.scoreCount, .barText {
+  text-anchor: middle;
+  font-size: 2em;
+}
+
+.scoreCount {
+
+
+}
+
+.barText {
+}
+
+.barLine {
+  stroke: $Color1;
+  stroke-width: 5%;
+}
+
+.resultFilters {
+  display: flex;
+}
+
+.searchFilter {
+  background: $White;
+  border: 1px solid $Color1;
+  margin: 5px;
+}
+
+.playerSearchDropdown {
+  display: inline-flex !important;
+}
+
+.filterDropDown {
+  background: $Color1;
+  padding: 5px;
+  border-radius: 3px;
+  margin: 5px;
+  border: 1px solid $Dark;
+  display: flex;
+}
+
+.catExpander {
+  margin: 5px 0 0 25%;
+}
+
+.studentCatResult {
+  margin-left: 25%;
+  margin-top: 15px;
+  color: #777;
+}
+.scoreResult {
+  font-size: 1.25em;
+  font-weight: bold;
+  color: $Dark;
+}
+
+.btn-link:hover, .btn-link:active {
+  text-decoration: none;
+}
+
+.dropdown-menu.show {
+  top: 3px !important;
+  left: -7px !important;
+}
+
+
+.btn-link:hover {
+  color: $Dark;
+}
+
+#studentHeader {
+  text-align: center;
+  font-size: 1.1em;
+}

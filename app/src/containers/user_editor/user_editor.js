@@ -105,7 +105,6 @@ class UserEditor extends Component {
   render() {
     const { error, users, newUser } = this.state
     const { authUser, role } = this.props
-    console.log({users,authUser})
     return (
       <div>
         { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }

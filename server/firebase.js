@@ -198,15 +198,49 @@ const addSurveyResults = async(surveyId, results, { firstName, lastName, student
   return promise
 }
 
-const getSurveyResults = async(surveyId) => {
+const usersById = {}
+const usersByName = {}
+const surveyResults = {}
 
+const ref = rt_database.ref('userResultsByFullName')
+ref.on("child_added", function(snap) {
+  const userSurveyResults = snap.val()
+  const keys = Object.keys(userSurveyResults)
+  for (let k = 0; k < keys.length; k++) {
+    const result = userSurveyResults[keys[k]]
+    const { categories, additionalResults, id, firstName, lastName, studentId, time } = result
+    const fullName = `${lastName} ${firstName}`
+    if (!usersByName.hasOwnProperty(fullName)) usersByName[fullName] = []
+    if (!usersById.hasOwnProperty(studentId)) usersById[studentId] = []
+    if (!surveyResults.hasOwnProperty(id)) surveyResults[id] = []
+    usersById[studentId].push(result)
+    usersByName[fullName].push(result)
+    surveyResults[id].push(result)
+    // result is only linked to by each dictionary here //
+  }
+})
+
+
+
+const getUserLists = () => {
+  // returns a list of user ids AND names from all survey results
+  return { userIds: Object.keys(usersById), userNames: Object.keys(usersByName) }
 }
 
-const getUserSurveyResults = async(email) => {
+const getSurveyResults = (surveyId) => {
+  return surveyResults[surveyId]
+}
 
+const getUserResults = (getById=true, id) => {
+  // should return a list of all user survey results
+  const result = getById ? usersById[id] : usersByName[id]
+  return result
 }
 
 module.exports = {
+  getSurveyResults,
+  getUserLists,
+  getUserResults,
   addSurveyResults,
   addOrModifySurvey,
   addOrModifyElevatedUser,

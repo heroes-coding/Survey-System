@@ -32,7 +32,6 @@ function renderButtonLabel(props) {
 }
 
 export default (props) => {
-  console.log({props})
   return (
     <form className={`${props.containerClass ? props.containerClass : 'input-group filterGroup '}` + ' justify-content-center'} >
       {props.resetFunction && <button

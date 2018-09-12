@@ -292,7 +292,6 @@ class SurveyEditor extends Component {
       surveyIds: ['New Survey']
     }
     axios.get('/getSurveyIds').then(res => {
-      console.log(res)
       this.setState({...this.state, surveyIds: ['New Survey'].concat(res.data) })
     })
     this.populateSurveyDraft()

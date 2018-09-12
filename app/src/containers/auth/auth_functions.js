@@ -2,7 +2,51 @@ import { auth } from './firebase';
 import axios from 'axios'
 window.axios = axios
 
+
+export const getUserResults = async(getById, id) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const adminIdToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/getUserResults', {adminIdToken, getById, id})
+      if (res.status === 200) resolve(res.data)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
+export const getSurveyResults = async(surveyId) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const adminIdToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/getSurveyResults', {adminIdToken, surveyId})
+      if (res.status === 200) resolve(res.data)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
+export const getUserLists = async(surveyId) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const adminIdToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/getUserLists', {adminIdToken})
+      if (res.status === 200) resolve(res.data)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
 export const getUsers = async() => {
+  // these are admin level users
   let promise = new Promise(async(resolve, reject) => {
     try {
       const res = await axios.get('/getUsers')
@@ -34,8 +78,8 @@ export const getRole = async() => {
 export const addOrModifySurvey = async(survey) => {
   let promise = new Promise(async(resolve, reject) => {
     try {
-      const idToken = await auth.currentUser.getIdToken()
-      const res = await axios.post('/addOrModifySurvey', {adminIdToken: idToken, survey })
+      const adminIdToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/addOrModifySurvey', {adminIdToken, survey })
       resolve(res)
     } catch (e) {
       console.log(e)
@@ -76,7 +120,7 @@ export const addOrModifyElevatedUser = async(user) => {
 export const addSurveyResults = async(surveyId, results, user) => {
   let promise = new Promise(async(resolve, reject) => {
     try {
-      const res = await axios.post('addSurveyResults', { surveyId, results, user })
+      const res = await axios.post('/addSurveyResults', { surveyId, results, user })
       resolve(res)
     } catch (e) {
       console.log(e)
