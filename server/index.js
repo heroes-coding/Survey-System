@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const port = process.env.PORT || 5301;
 const axios = require('axios')
 
-const {   getSurveyResults, getUserLists, getUserResults,addSurveyResults, getSurveyIds, addSurvey, getUserFromToken, users, deleteElevatedUser, addOrModifyElevatedUser, addOrModifySurvey, setDefault, getDefault, getSurvey } = require('./firebase')
+const {  deleteResult, getSurveyResults, getUserLists, getUserResults,addSurveyResults, getSurveyIds, addSurvey, getUserFromToken, users, deleteElevatedUser, addOrModifyElevatedUser, addOrModifySurvey, setDefault, getDefault, getSurvey } = require('./firebase')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -92,9 +92,9 @@ app.get('/getSurvey/:surveyId', async(req, res) => {
 })
 
 app.post('/addSurveyResults', async function(req, res) {
-  const { surveyId, results, user} = req.body
+  const { results } = req.body
   try {
-    const result = await addSurveyResults(surveyId, results, user)
+    const result = await addSurveyResults(results)
     return res.send(result)
   } catch (e) {
     return res.send(e.message)
@@ -144,6 +144,15 @@ app.post('/deleteElevatedUser', async function(req, res) {
   const { adminIdToken, user } = req.body
   if (!isAdmin(adminIdToken)) return res.send("Nope")
   const result = await deleteElevatedUser(user.email)
+  return res.send(result)
+})
+
+
+// set up, not implemented as it requires a restart of the front end.  Hmm... complicated no matter how it is done.
+app.post('/deleteResult', async function(req, res) {
+  const { adminIdToken, key } = req.body
+  if (!isAdmin(adminIdToken)) return res.send("Nope")
+  const result = await deleteResult(key)
   return res.send(result)
 })
 

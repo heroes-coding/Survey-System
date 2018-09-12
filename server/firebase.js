@@ -153,14 +153,6 @@ const getDefault = () => defaultSurvey
 const getSurvey = (surveyId) => {
   let promise = new Promise(async(resolve, reject) => {
     resolve(surveys[surveyId])
-    /*
-    firestore.collection("surveys").doc(surveyId).get().then(doc => {
-        if (!doc.exists) resolve(defaultSurvey)
-        else resolve(doc.data())
-      }).catch(err => {
-        reject(err)
-      })
-    */
     })
     return promise
 }
@@ -178,11 +170,58 @@ const addOrModifySurvey = (survey) => {
 RESULTS
 */
 
-const addSurveyResults = async(surveyId, results, { firstName, lastName, studentId }) => {
+const validateSurvey = (result) => {
+  const { id, studentId, firstName, lastName, time } = result
+  // returns true if survey ok, otherwise
+  if (!id) return "Invalid survey id"
+  const survey = surveys[id]
+  if (!survey) return "That survey does not exist"
+  if (isNaN(studentId)) return "Invalid student id"
+  try {
+    if (studentId !== "") {
+      const stringId = String(studentId)
+      if (stringId[0] !== "8" || stringId.length !== 9) return "Invalid student id"
+    }
+    if (!firstName || !lastName) return "Invalid name"
+    if (!time) return "No survey taken time"
+    const nCats = result.categories.length
+    const nQ = result.additionalQuestions.length
+    for (let q = 0; q < nQ; q++) {
+      const [ qNumber, qAnswer ] = result.additionalQuestions[q]
+      if (!survey.additionalQuestions.hasOwnProperty(qNumber) || isNaN(qAnswer)) return "Invalid survey submission"
+    }
+    for (let c = 0; c < nCats; c++) {
+      const [ catId, catQs ] = result.categories[c]
+      if (!survey.categories[catId]) return "Invalid survey submission"
+      const nQ = catQs.length
+      const maxScore = survey.categories[catId].answers.length+1
+      let total = 0
+      for (let q = 0; q < nQ; q++) {
+        let [ qId, qAns ] = catQs[q]
+        if (!survey.categories[catId].questions.hasOwnProperty(qId) || isNaN(qAns)) return "Invalid survey submission"
+      }
+    }
+  } catch (e) {
+    return e.message
+  }
+  return "okay"
+}
+
+const addSurveyResults = async(results) => {
   // Adding a survey result should:
+  // 0) Validate the results to avoid data corruption, reject if not okay (remember, this function is exposed to anyone)
   // 1) Add to the survey results node
   // 2) Update (or create) a user's survey history
   let promise = new Promise(async(resolve, reject) => {
+    const validationMessage = validateSurvey(results)
+    if (validationMessage !== "okay") return resolve(validationMessage)
+    const resultRef = resultsRef.push()
+    resultRef.set(results).then(() => {
+      resolve('okay')
+    }).catch(e => {
+      reject(e)
+    })
+    /*
     const surveyResultsRef = rt_database.ref('surveyResults').child(surveyId).push()
     const userResultsIdRef = rt_database.ref('userResultsById').child(studentId || 'anon').push()
     const userResultsFullNameRef = rt_database.ref('userResultsByFullName').child(`${lastName} ||| ${firstName}` || 'anon').push()
@@ -194,6 +233,7 @@ const addSurveyResults = async(surveyId, results, { firstName, lastName, student
     }).catch(e => {
       reject(e)
     })
+    */
   })
   return promise
 }
@@ -201,26 +241,39 @@ const addSurveyResults = async(surveyId, results, { firstName, lastName, student
 const usersById = {}
 const usersByName = {}
 const surveyResults = {}
+const resultsByInternalKey = {}
 
-const ref = rt_database.ref('userResultsByFullName')
-ref.on("child_added", function(snap) {
-  const userSurveyResults = snap.val()
-  const keys = Object.keys(userSurveyResults)
-  for (let k = 0; k < keys.length; k++) {
-    const result = userSurveyResults[keys[k]]
-    const { categories, additionalResults, id, firstName, lastName, studentId, time } = result
-    const fullName = `${lastName} ${firstName}`
-    if (!usersByName.hasOwnProperty(fullName)) usersByName[fullName] = []
-    if (!usersById.hasOwnProperty(studentId)) usersById[studentId] = []
-    if (!surveyResults.hasOwnProperty(id)) surveyResults[id] = []
-    usersById[studentId].push(result)
-    usersByName[fullName].push(result)
-    surveyResults[id].push(result)
-    // result is only linked to by each dictionary here //
-  }
+const resultsRef = rt_database.ref('results')
+resultsRef.on("child_added", function(snap) {
+  const key = snap.key
+  const result = snap.val()
+  const { studentId, lastName, firstName, id } = result
+  result.key = key
+  console.log({[key]: result})
+  const fullName = `${lastName} ${firstName}`
+  if (!usersByName.hasOwnProperty(fullName)) usersByName[fullName] = []
+  if (!usersById.hasOwnProperty(studentId)) usersById[studentId] = []
+  if (!surveyResults.hasOwnProperty(id)) surveyResults[id] = []
+  usersById[studentId].push(result)
+  usersByName[fullName].push(result)
+  surveyResults[id].push(result)
+  resultsByInternalKey[key] = result
 })
 
 
+
+const deleteResult = async(key) => {
+  // mark the object as deleted.  It won't actually be removed from result sets until the server somehow restarts,
+  // It will, however, be removed from firebase, and the deleted marker should be observed on the front end to be ignored
+    let promise = new Promise(async(resolve, reject) => {
+      resultsRef.child(key).removeValue().then(() => {
+        resolve('okay')
+      }).catch(e => {
+        reject(e)
+      })
+    })
+    return promise
+}
 
 const getUserLists = () => {
   // returns a list of user ids AND names from all survey results
@@ -246,6 +299,7 @@ module.exports = {
   addOrModifyElevatedUser,
   getUserFromToken,
   deleteElevatedUser,
+  deleteResult,
   users,
   setDefault,
   getDefault,

@@ -22,6 +22,12 @@ button.catExpander.collapsed:before
     display:block;
 }
 
+.reportHeader {
+  padding: 20px;
+  font-size: 1.5em;
+  text-decoration: underline;
+}
+
 button.catExpander:before
 {
     content:'Hide Questions & Answers';

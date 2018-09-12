@@ -117,10 +117,10 @@ export const addOrModifyElevatedUser = async(user) => {
   return promise
 }
 
-export const addSurveyResults = async(surveyId, results, user) => {
+export const addSurveyResults = async(results) => {
   let promise = new Promise(async(resolve, reject) => {
     try {
-      const res = await axios.post('/addSurveyResults', { surveyId, results, user })
+      const res = await axios.post('/addSurveyResults', { results })
       resolve(res)
     } catch (e) {
       console.log(e)

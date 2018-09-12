@@ -56,11 +56,8 @@ const getSurveyData = createSelector(
         for (let q = 0; q < nQ; q++) {
           let [ qId, qAns ] = catQs[q]
           const reverse = survey.categories[catId].questions[qId].reverse
-          if (reverse) console.log(`Before: ${qAns}`)
           qAns = reverse ? maxScore - qAns : qAns
-          if (reverse) console.log(`After: ${qAns}`)
           total += qAns
-          console.log({reverse})
           survey.categories[catId].questions[qId].results.push(qAns)
         }
         survey.categories[catId].results.push(total/nQ)

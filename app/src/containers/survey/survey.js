@@ -30,7 +30,7 @@ class App extends Component {
     const additionalQuestions = Object.entries(surveyData.additionalQuestions).map(a => [parseInt(a[0]),a[1].value])
     const categories = Object.entries(surveyData.categories).map(c => [parseInt(c[0]),Object.entries(c[1].questions).map(q => [parseInt(q[0]),q[1].value])] )
     const results = { firstName, lastName, studentId, additionalQuestions, categories, id: surveyData.id, time: (new Date()).getTime() }
-    addSurveyResults(surveyData.id, results, { firstName, lastName, studentId }).then((res) => {
+    addSurveyResults(results).then((res) => {
       if (res.data ==="okay") this.setState({... this.state, error: "Survey successfully submitted!"})
       else this.setState({... this.state, validationFailed: false, formSubmitted: false, error: res.data})
     }).catch(error => {

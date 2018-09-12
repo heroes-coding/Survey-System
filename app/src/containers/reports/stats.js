@@ -22,16 +22,23 @@ const Question = ({ nAnswers, mean, std, median, studentResults, question, rever
   <div className="questionResults">
     <div className="resultQuestionHolder">
       <div className="resultQuestion">{question}{reverse && <div className="reverse">(<i className="fa fa-backward" aria-hidden="true"></i> reverse-encoded)</div>}</div>
-      <div className="questionStatHolder">
+      {nAnswers && <div className="questionStatHolder">
         <Score overClass="qStat" label={'μ: '} value={mean} />
         <Score overClass="qStat" label={'Med.: '} value={median} />
         <Score overClass="qStat" label={'σ²: '} value={std} />
-      </div>
-      {studentResults.map(([r,date],i) =>
+      </div>}
+      {nAnswers && studentResults.map(([r,date],i) =>
         <div key={i} className="studentQResult">
           {`${firstName} scored `}
           <span className="scoreResult">{r}</span>
           {reverse && ` (answer ${nAnswers+1-r})`}
+          {` on ${date}`}
+        </div>
+      )}
+      {!nAnswers && studentResults.map(([r,date],i) =>
+        <div key={i} className="studentQResult">
+          {`${firstName} answered `}
+          <span className="scoreResult">{r}</span>
           {` on ${date}`}
         </div>
       )}
@@ -134,7 +141,7 @@ export default (props) => {
   let firstName
   let lastName
   if (studentData.length) {
-    dates = studentData.map(x => String(new Date(x.time)).slice(0,15))
+    dates = studentData.map(x => String(new Date(x.time)).slice(4,15))
     firstName = studentData[0].firstName
     lastName = studentData[0].lastName
   }
@@ -149,7 +156,25 @@ export default (props) => {
         <div id="studentTitle">{`Survey ${surveyId} results${studentName && ` for ${firstName} ${lastName}`}${studentId ? ` (id: ${studentId})` : ''}`}</div>
         <div id="studentDates">{`(Taken on ${getMessage(null,null,dates)})`}</div>
       </div>}
+      <div className="reportHeader">Category results:</div>
       {Object.entries(categories).map(([cI,c]) => <Category firstName={firstName} hasStudent={hasStudent} dates={dates} key={cI} cI={cI} {...c} studentData={studentData} survey={survey} results={results} />)}
+      <div className="reportHeader">Additional question results:</div>
+      {Object.entries(additionalQuestions).map(([qI,q]) => {
+        let studentResults = []
+        const { title, answers, results } = q
+        const nAnswers = answers.length
+        const bars = Array(nAnswers).fill(1).map((x,i) => { return [i+1,0,answers[i]] })
+        results.map(r => {
+          bars[r-1][1] += 1
+        })
+        studentData.map((d,i) => {
+          if (!d.additionalResults.hasOwnProperty(qI)) return
+          const value = d.additionalResults[qI]
+          if (value) studentResults.push([answers[value-1],dates[i]])
+        })
+        console.log({studentResults})
+        return <Question key={qI} question={title} bars={bars} studentResults={studentResults} firstName={firstName} hasStudent={hasStudent} />
+      })}
     </div>
   )
 

@@ -7,7 +7,7 @@ class Graph extends React.Component {
     let { singlePoint, midline,
       points, linePoints,
       graphClass, yLabel,
-      xLabel, xRatio,
+      xLabel, xRatio, tickLabels,
       yRatio, xOff, yOff,
       title, formatter, noArea,
       yFormatter,
@@ -118,7 +118,7 @@ class Graph extends React.Component {
             )
           })}
           {bars && bars.map((p,i) => {
-            let [ x, y ] = p
+            let [ x, y, l ] = p
             x = xScale(x)
             const yCoord = yScale(y > yMax ? yMax : y)
             const yVal = yFormatter(y)
@@ -132,7 +132,7 @@ class Graph extends React.Component {
                   className="barLine"
                 />
                 <text className="scoreCount" x={x} y={yMaxCoord-20}>{y}</text>
-                <text className="barText" x={x} y={yMaxCoord+40}>{i+1}</text>
+                <text className="barText" x={x} y={yMaxCoord+40}>{l ? l : i+1}</text>
               </g>
             )
           })}
