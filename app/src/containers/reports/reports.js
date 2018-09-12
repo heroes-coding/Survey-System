@@ -35,7 +35,9 @@ class SurveyEditor extends Component {
       this.props.addStudentNames(lists.userNames)
     })
   }
-
+  componentWillUnmount() {
+    this.resetFilters()
+  }
   populateSurveyDraft(e) {
     if (e) e.preventDefault()
     this.props.populateSurveyDraft({... this.state.survey})

@@ -1,5 +1,3 @@
-import _ from "lodash"
-
 export const STUDENT = "STUDENT"
 export const ADMIN = "ADMIN"
 export const COACH = "COACH"

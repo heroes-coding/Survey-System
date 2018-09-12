@@ -294,7 +294,7 @@ class SurveyEditor extends Component {
     axios.get('/getSurveyIds').then(res => {
       this.setState({...this.state, surveyIds: ['New Survey'].concat(res.data) })
     })
-    this.populateSurveyDraft()
+    // setTimeout(this.populateSurveyDraft(),500)
   }
   changeSurveyAge(survey, isOld=true) {
     // mutates survey with isOld modifiers

@@ -76,7 +76,6 @@ const CatQuestion = (props) => {
 }
 
 const Category = (props) => {
-  console.log({props})
   let { firstName, name, questions, coachLinks, coachAdvice, cutoffScore, cI, survey, results, studentData, dates, hasStudent, answers } = props
 
   const scores = survey.categories[cI].results
@@ -162,6 +161,7 @@ export default (props) => {
       {Object.entries(additionalQuestions).map(([qI,q]) => {
         let studentResults = []
         const { title, answers, results } = q
+        if (!results) return null
         const nAnswers = answers.length
         const bars = Array(nAnswers).fill(1).map((x,i) => { return [i+1,0,answers[i]] })
         results.map(r => {
@@ -172,7 +172,6 @@ export default (props) => {
           const value = d.additionalResults[qI]
           if (value) studentResults.push([answers[value-1],dates[i]])
         })
-        console.log({studentResults})
         return <Question key={qI} question={title} bars={bars} studentResults={studentResults} firstName={firstName} hasStudent={hasStudent} />
       })}
     </div>
