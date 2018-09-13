@@ -54,6 +54,8 @@ See the above note about environmental variables as well.
 
 This can be set up as a normal server setup with the create react app build directory as a static and normal web server permissions directory, but it is configured to work with Heroku.  Just use the default node build package for Heroku, and the server and static site should both work correctly.  You'll need to add the top level survey directory to a Heroku private git, and then after you are ready to commit development changes to production, it is as simple as the normal build command for Heroku:
 
+(If you are using an existing project, you'll need to copy the git from Heroku first - see https://stackoverflow.com/questions/5129598/how-to-link-a-folder-with-an-existing-heroku-app)
+
 ```
 git push heroku master
 ```

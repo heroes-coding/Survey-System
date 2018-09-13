@@ -1,5 +1,5 @@
 @import "./style/variables.scss";
-@import "./containers/survey/surveyDark.scss";
+@import "./containers/survey/surveyDark0.scss";
 @import "./containers/survey_editor/survey_editor.scss";
 @import "./containers/auth/auth.scss";
 @import "./containers/dashboard/dashboard.scss";
@@ -9,10 +9,7 @@
 
 body {
   background: $White;
-  font-family: 'Roboto-Condensed', sans-serif;
-  // font-family: 'Noto Serif KR', sans-serif;
-  // font-family: 'Montserrat', sans-serif;
-
+  font-family: 'Titillium Web', sans-serif;
   background-image: url("/columns.jpg");
   background-attachment: fixed;
   background-position: center bottom;

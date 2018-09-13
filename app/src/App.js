@@ -35,7 +35,8 @@ class App extends Component {
               <img className="banner" src="/banner.png" />
             </div>
           </div>
-          <DropDown
+          {/* this is the font preview drop down.  would also need to add back the line on index.html for more Google fonts
+            <DropDown
             currentSelection={""}
             name={`Select Font (is not permanent) - Current Selection - ${this.state.font}`}
             id='surveySelector'
@@ -60,7 +61,7 @@ class App extends Component {
             }}
             renderDropdownName={true}
             currentID={0}
-          />
+          />*/}
           <div className="row">
             <div className='col'>
             <Switch>
