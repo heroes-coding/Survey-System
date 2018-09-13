@@ -130,6 +130,20 @@ export const addSurveyResults = async(results) => {
   return promise
 }
 
+export const deleteResult = async(key) => {
+  let promise = new Promise(async(resolve, reject) => {
+    try {
+      const idToken = await auth.currentUser.getIdToken()
+      const res = await axios.post('/deleteResult', {adminIdToken: idToken, key })
+      resolve(res)
+    } catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  })
+  return promise
+}
+
 export const deleteElevatedUser = async(user) => {
   let promise = new Promise(async(resolve, reject) => {
     try {

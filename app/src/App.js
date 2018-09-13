@@ -29,7 +29,7 @@ class App extends Component {
             </div>
           </div>
           <div className="row">
-            <div className='col' id="contentHolder">
+            <div className='col'>
             <Switch>
               <Route
                 path={LOGIN}

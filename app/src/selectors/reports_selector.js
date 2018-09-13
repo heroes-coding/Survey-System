@@ -166,6 +166,9 @@ export default createSelector(
       const ids = results.map(d => d.studentId)
       studentIds = studentIds.filter(id => ids.includes(id))
       studentNames = studentNames.filter(name => names.includes(name))
+    } else if (results==="") {
+      studentIds = []
+      studentNames = []
     }
     // some ugly extra handling of ids and names here and everywhere, because there is no one single identifier for each student
     if (id && !name && studentNames.length===1) name = studentNames[0]

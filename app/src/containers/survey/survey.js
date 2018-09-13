@@ -22,6 +22,7 @@ class App extends Component {
     this.submitForm = this.submitForm.bind(this)
   }
   updateSurvey(categoryId, questionId, value) {
+    if (this.state.formSubmitted) return // can't update stuff after submission
     this.props.updateSurvey(categoryId, questionId, value)
   }
   submitForm() {
@@ -57,7 +58,7 @@ class App extends Component {
     const negativeCategories = []
     // formSubmitted = true // comment this out after testing
     return (
-      <div className="row">
+      <div className="row surveyBody">
         <div className='col-lg-1 col-xl-2' />
         <div className='col-sm-12 col-lg-10 col-xl-8 surveyHolder'>
           <h4 className="surveyTitle">{title}</h4>
@@ -118,10 +119,10 @@ class App extends Component {
               <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, firstName: e.target.value})} placeholder="First / Given Name" required />
               <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, lastName: e.target.value})} placeholder="Last / Family Name" required />
               <div className="input-group-prepend">
-                <span className="input-group-text">SRJC ID # (optional)</span>
+                <span className="input-group-text">SRJC ID #</span>
               </div>
               <input type="text" className="form-control" onChange={(e) => this.setState({...this.state, studentId: e.target.value})} placeholder="Starts with an 8, no spaces" pattern="([0-9]{9})?" />
-              <button className="btn btn-secondary btn-md"
+              <button className="btn btn-secondary btn-md btn-info"
                 type="submit"
                 disabled={formSubmitted}
                 onClick={(e) => {
@@ -140,6 +141,7 @@ class App extends Component {
           { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
         </div>
         <div className='col-lg-1 col-xl-2' />
+        {/*<div id="non-disclosure"><img id="nd-image" src="non-disclosure.png" /></div>*/}
       </div>
     );
   }

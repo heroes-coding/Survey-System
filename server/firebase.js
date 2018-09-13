@@ -37,7 +37,6 @@ const observer = usersQuery.onSnapshot(querySnapshot => {
     users[data.email] = data
     // console.log({[id]:data})
   })
-  console.log({users})
 }, err => {
   console.log(`Encountered error: ${err}`);
 })
@@ -99,9 +98,7 @@ SURVEYS
 const surveys = {}
 const surveysQuery = firestore.collection('surveys');
 const getSurveyIds = () => {
-  console.log({surveys})
   const ids = Object.values(surveys).map(s => s.id)
-  console.log({ids})
   return ids
 }
 
@@ -113,7 +110,6 @@ const surveyObserver = surveysQuery.onSnapshot(querySnapshot => {
     if (data.hasOwnProperty('id')) surveys[data.id] = data
     // console.log({[id]:data})
   })
-  console.log({surveys})
 }, err => {
   console.log(`Encountered error: ${err}`);
 })
@@ -249,7 +245,6 @@ resultsRef.on("child_added", function(snap) {
   const result = snap.val()
   const { studentId, lastName, firstName, id } = result
   result.key = key
-  console.log({[key]: result})
   const fullName = `${lastName} ${firstName}`
   if (!usersByName.hasOwnProperty(fullName)) usersByName[fullName] = []
   if (!usersById.hasOwnProperty(studentId)) usersById[studentId] = []
@@ -266,14 +261,32 @@ const deleteResult = async(key) => {
   // mark the object as deleted.  It won't actually be removed from result sets until the server somehow restarts,
   // It will, however, be removed from firebase, and the deleted marker should be observed on the front end to be ignored
     let promise = new Promise(async(resolve, reject) => {
-      resultsRef.child(key).removeValue().then(() => {
+      rt_database.ref(`results/${key}`).remove().then(() => {
+        const result = resultsByInternalKey[key]
+        const { studentId, lastName, firstName, id } = result
+        const fullName = `${lastName} ${firstName}`
+        delete resultsByInternalKey[key]
+
+        const idIndex = usersById[studentId].map((x,i) => { return [x.key, i]}).filter(x => x[0] === key)[0][1]
+        usersById[studentId].splice(idIndex,1)
+        if (!usersById[studentId].length) delete usersById[studentId]
+
+        const nameIndex = usersByName[fullName].map((x,i) => { return [x.key, i]}).filter(x => x[0] === key)[0][1]
+        usersByName[fullName].splice(nameIndex,1)
+        if (!usersByName[fullName].length) delete usersByName[fullName]
+
+        const surveyIndex = surveyResults[id].map((x,i) => { return [x.key, i]}).filter(x => x[0] === key)[0][1]
+        surveyResults[id].splice(surveyIndex,1)
+        if (!surveyResults[id].length) delete surveyResults[id]
+
         resolve('okay')
       }).catch(e => {
-        reject(e)
+        resolve(e.message)
       })
     })
     return promise
 }
+
 
 const getUserLists = () => {
   // returns a list of user ids AND names from all survey results

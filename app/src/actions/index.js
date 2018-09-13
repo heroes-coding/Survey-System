@@ -30,7 +30,7 @@ export const updateStudentData = (studentData) => {
     d.additionalQuestions.map(([i,v]) => {
       d.additionalResults[i] = v
     })
-    
+
   })
   return { type: UPDATE_STUDENT_DATA, studentData }
 }
@@ -53,7 +53,7 @@ export const addStudentIds = (studentIds) => {
 }
 
 export const addSurveyData = (surveyData) => {
-  surveyData.map(d => {
+  if (surveyData) surveyData.map(d => {
     d.fullName = `${d.lastName} ${d.firstName}`
     if (d.studentId) d.studentId = parseInt(d.studentId)
   })

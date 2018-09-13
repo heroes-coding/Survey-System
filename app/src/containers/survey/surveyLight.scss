@@ -1,26 +1,17 @@
 @import "../../style/variables.scss";
-$Blue: #00275D;
-$Red: #BF2C37;
-$Bright: lighten(#17A2B8,10%);
-
-.surveyBody {
-  background: $Blue;
-  margin-bottom: 30px;
-  border: 1px solid #ccc;
-}
 
 .surveyHolder {
+  background: $White;
   padding: 30px 30px;
   border-radius: 2px;
   // font-family: 'Roboto-Condensed', sans-serif;
-  font-family: 'Lato', sans-serif;
+  // font-family: 'Lato', sans-serif;
   // font-family: 'Oswald', sans-serif;
-  // font-family: 'Magra', sans-serif;
+  font-family: 'Magra', sans-serif;
   // border: 1px solid $Light;
   h5 {
     font-size: 1.4em;
   }
-  color: $White;
 }
 
 .adviceHeader {
@@ -28,7 +19,7 @@ $Bright: lighten(#17A2B8,10%);
 }
 
 .surveyTitle {
-  color: $Bright;
+  color: $Dark;
   font-size: 1.8em;
   margin-bottom: 20px;
 }
@@ -45,7 +36,7 @@ $Bright: lighten(#17A2B8,10%);
 .categoryTitle {
   font-size: 1.2em;
   margin: 10px 0;
-  color: $White;
+  Color: $Color1;
 }
 
 .invalid {
@@ -58,12 +49,12 @@ $Bright: lighten(#17A2B8,10%);
   justify-content: space-between;
   padding: 10px 20px;
   margin: 10px 0;
-  border: 1px solid darken($Bright,20%);
-  box-shadow: 2px 2px darken($Bright,30%);
+  border: 1px solid darken($White,20%);
+  box-shadow: 2px 2px darken($White,30%);
 }
 
 .questionHolder:hover {
-  background: $Bright;
+  background: lighten($Light,10%);
 }
 
 .answerHolder {
@@ -74,12 +65,6 @@ $Bright: lighten(#17A2B8,10%);
   margin: 10px 0;
 }
 
-#non-disclosure {
-
-}
-#nd-image {
-  width: 100%;
-}
 
 .oddQuestion {
   // background: $Light;
@@ -96,7 +81,7 @@ $Bright: lighten(#17A2B8,10%);
   font-size: 1em;
   font-weight: bold;
   margin: 10px -10px -10px 20px;
-  color: lighten(#17A2B8,10%);
+  color: darken($Color1, 25%);
   white-space: pre-wrap;
   text-align: center;
 }

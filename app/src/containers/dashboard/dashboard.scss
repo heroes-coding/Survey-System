@@ -1,11 +1,5 @@
 @import "../../style/variables.scss";
 
-#contentHolder {
-  background: $White;
-  padding: 30px 10px 5px 10px;
-  border: 1px solid $Light;
-}
-
 #dashNav {
   display: flex;
   flex-direction: column;
@@ -19,7 +13,10 @@
 }
 
 .dashHolder {
+  padding: 30px 10px 5px 10px;
   margin: 0px 0px 0px -30px;
+  background: $White;
+  border: 1px solid $Light;
 
 }
 

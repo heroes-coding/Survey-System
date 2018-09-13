@@ -21,6 +21,7 @@ class SurveyEditor extends Component {
     this.resetFilters = this.resetFilters.bind(this)
     this.resetStudent = this.resetStudent.bind(this)
     this.resetSurvey = this.resetSurvey.bind(this)
+    this.refreshSurvey = this.refreshSurvey.bind(this)
     this.state = {
       survey: null,
       error: null,
@@ -77,6 +78,13 @@ class SurveyEditor extends Component {
     this.props.selectStudentId(null)
     this.props.updateStudentData([])
   }
+  refreshSurvey() {
+    this.resetFilters()
+    getUserLists().then(lists => {
+      this.props.addStudentIds(lists.userIds)
+      this.props.addStudentNames(lists.userNames)
+    })
+  }
   resetSurvey() {
     this.props.addSurveyData([])
     this.props.selectSurveyId(null)
@@ -112,7 +120,7 @@ class SurveyEditor extends Component {
       searchDebounce(type,term)
     }
     const { error, nameSearch, idSearch } = this.state
-    let { studentName, studentId, studentIds, studentNames, surveyIds, surveyId } = this.props
+    let { role, studentName, studentId, studentIds, studentNames, surveyIds, surveyId } = this.props
     return (
       <div className="reportsHolder">
         <button onClick={this.resetFilters} className="btn btn-primary btn-sm btn-block" >Reset all filters</button>
@@ -162,7 +170,7 @@ class SurveyEditor extends Component {
           />
         </div>
         { error && <div className="alert alert-primary" role="alert">{error.message || error }</div> }
-        <Stats {...this.props} />
+        <Stats {...this.props} refreshSurvey={this.refreshSurvey} />
 
       </div>
 

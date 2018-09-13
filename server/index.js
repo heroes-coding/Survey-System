@@ -85,9 +85,7 @@ app.get('/getSurvey/:surveyId', async(req, res) => {
   // TO DO : get id and password, query for user, if exists check if expires, if expires refresh token if not exists return doesn't exist otherwise return id and password in JSON format
   // this is for automatic logins
   let { surveyId } = req.params
-  console.log(req.params,{surveyId})
   let survey = await getSurvey(surveyId)
-  console.log({survey})
   res.send(survey)
 })
 
@@ -151,8 +149,10 @@ app.post('/deleteElevatedUser', async function(req, res) {
 // set up, not implemented as it requires a restart of the front end.  Hmm... complicated no matter how it is done.
 app.post('/deleteResult', async function(req, res) {
   const { adminIdToken, key } = req.body
+  console.log({ adminIdToken, key })
   if (!isAdmin(adminIdToken)) return res.send("Nope")
   const result = await deleteResult(key)
+  console.log({result})
   return res.send(result)
 })
 

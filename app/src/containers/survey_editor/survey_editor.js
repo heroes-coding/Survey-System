@@ -152,12 +152,12 @@ const Form = ({ overallSuccess, positiveSuccess, negativeSuccess, setDefaultSurv
       <AdditionalQuestions addSingleAnswer={addSingleAnswer} addSingleQuestion={addSingleQuestion} changeSingleAnswer={changeSingleAnswer} changeSingleQuestion={changeSingleQuestion} additionalQuestions={additionalQuestions} />
       {isOld && <button type="button" className="btn btn-primary btn-sm btn-block" onClick={setDefaultSurvey}>Set as default (site root) survey</button>}
 
-      <button type="submit" className="btn btn-info btn-sm btn-block" >{`${isOld ? 'Modify' : 'Add'} Above Survey`}</button>
+      <button type="submit" className="btn btn-info btn-sm btn-block" >{`${isOld ? 'Modify' : 'Add'} Above Survey (this saves permanently)`}</button>
 
 
       <div className="input-group mb-3">
         <button className ="btn btn-secondary btn-md" type="button" name="signup" onClick={submitForm}>
-          Update Sample Survey
+          Preview survey changes (update preview survey below - this does not save changes)
         </button>
       </div>
 

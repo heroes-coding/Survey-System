@@ -3,6 +3,7 @@ import * as d3 from 'd3'
 import KDensity from './kdensity'
 import Graph from './graph'
 import { formatNumber, getMessage } from '../../helpers/tiny_helpers'
+import { deleteResult } from '../auth/auth_functions'
 import Suggestions from '../survey/suggestions'
 
 const getStats = (scores) => {
@@ -134,13 +135,16 @@ const Category = (props) => {
 }
 
 export default (props) => {
-  let { studentName, studentId, surveyId, studentData, results, survey } = props
+  let { refreshSurvey, role, studentName, studentId, surveyId, studentData, results, survey } = props
   const { overallSuccess, positiveSuccess, negativeSuccess, categories, additionalQuestions, title, id, description } = survey
   let dates
+  let fullDates
   let firstName
   let lastName
+
   if (studentData.length) {
     dates = studentData.map(x => String(new Date(x.time)).slice(4,15))
+    fullDates = studentData.map(x => { return {date:String(new Date(x.time)).slice(0,21), key: x.key} })
     firstName = studentData[0].firstName
     lastName = studentData[0].lastName
   }
@@ -155,6 +159,21 @@ export default (props) => {
         <div id="studentTitle">{`Survey ${surveyId} results${studentName && ` for ${firstName} ${lastName}`}${studentId ? ` (id: ${studentId})` : ''}`}</div>
         <div id="studentDates">{`(Taken on ${getMessage(null,null,dates)})`}</div>
       </div>}
+      {hasStudent && role==="admin" && fullDates.map((d,i) => {
+        const { date, key } = d
+        return <button key={i} type="button" className="btn btn-danger btn-sm btn-block" onClick={() => {
+          if (window.confirm(`Are you sure you want to delete the survey data from ${date}?`)) {
+            deleteResult(key).then(r => {
+              console.log(r)
+              if (r.data !== "okay") this.setState({...this.state, error: r.data })
+              else {
+                refreshSurvey()
+
+              }
+            })
+          }
+        }}>{`Delete the survey data from ${date}`}</button>
+      })}
       <div className="reportHeader">Category results:</div>
       {Object.entries(categories).map(([cI,c]) => <Category firstName={firstName} hasStudent={hasStudent} dates={dates} key={cI} cI={cI} {...c} studentData={studentData} survey={survey} results={results} />)}
       <div className="reportHeader">Additional question results:</div>
@@ -176,5 +195,4 @@ export default (props) => {
       })}
     </div>
   )
-
 }
