@@ -362,7 +362,6 @@ class SurveyEditor extends Component {
   render() {
     const { survey, error, isOld } = this.state
     const { overallSuccess, positiveSuccess, negativeSuccess, categories, additionalQuestions, title, id, description } = survey
-
     return (
       <div className="surveyEditor">
         <DropDown

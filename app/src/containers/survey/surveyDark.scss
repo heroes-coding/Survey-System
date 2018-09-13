@@ -1,10 +1,11 @@
 @import "../../style/variables.scss";
 $Blue: #00275D;
 $Red: #BF2C37;
-$Bright: lighten(#17A2B8,10%);
+$Bright: lighten(#17A2B8,10%); // lighten(#00275D,20%); //
+$Black: #1a1a1a;
 
 .surveyBody {
-  background: $Blue;
+  background: $Black;
   margin-bottom: 30px;
   border: 1px solid #ccc;
 }
@@ -12,19 +13,39 @@ $Bright: lighten(#17A2B8,10%);
 .surveyHolder {
   padding: 30px 30px;
   border-radius: 2px;
-  // font-family: 'Roboto-Condensed', sans-serif;
-  font-family: 'Lato', sans-serif;
-  // font-family: 'Oswald', sans-serif;
-  // font-family: 'Magra', sans-serif;
-  // border: 1px solid $Light;
   h5 {
     font-size: 1.4em;
   }
   color: $White;
 }
 
-.adviceHeader {
-  font-weight: 500;
+.categoryTitle {
+  font-size: 1.2em;
+  margin: 10px 0;
+  color: $White;
+}
+
+.questionHolder {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border: 1px solid darken($Bright,20%);
+  box-shadow: 2px 2px darken($Bright,30%);
+}
+
+.answerHeader {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 10px -10px -10px 20px;
+  color: lighten($Bright,10%);
+  white-space: pre-wrap;
+  text-align: center;
+}
+
+.questionHolder:hover {
+  background: $Bright;
 }
 
 .surveyTitle {
@@ -42,29 +63,16 @@ $Bright: lighten(#17A2B8,10%);
   margin: 50px 10px;
 }
 
-.categoryTitle {
-  font-size: 1.2em;
-  margin: 10px 0;
-  color: $White;
+.adviceHeader {
+  font-weight: 500;
 }
+
 
 .invalid {
   outline: 1px solid #ff0000 !important;
 }
 
-.questionHolder {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  padding: 10px 20px;
-  margin: 10px 0;
-  border: 1px solid darken($Bright,20%);
-  box-shadow: 2px 2px darken($Bright,30%);
-}
 
-.questionHolder:hover {
-  background: $Bright;
-}
 
 .answerHolder {
   display: flex;
@@ -92,14 +100,7 @@ $Bright: lighten(#17A2B8,10%);
   width: 30%;
 }
 
-.answerHeader {
-  font-size: 1em;
-  font-weight: bold;
-  margin: 10px -10px -10px 20px;
-  color: lighten(#17A2B8,10%);
-  white-space: pre-wrap;
-  text-align: center;
-}
+
 
 .multipleChoiceHolder {
   padding: 0px 0px 40px 0px;

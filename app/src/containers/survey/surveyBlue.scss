@@ -1,7 +1,10 @@
 @import "../../style/variables.scss";
+$Blue: #00275D;
+$Red: #BF2C37;
+$Bright: lighten(#17A2B8,10%);
 
 .surveyBody {
-  background: $White;
+  background: $Blue;
   margin-bottom: 30px;
   border: 1px solid #ccc;
 }
@@ -12,15 +15,15 @@
   h5 {
     font-size: 1.4em;
   }
+  color: $White;
 }
-
 
 .adviceHeader {
   font-weight: 500;
 }
 
 .surveyTitle {
-  color: $Dark;
+  color: $Bright;
   font-size: 1.8em;
   margin-bottom: 20px;
 }
@@ -37,7 +40,7 @@
 .categoryTitle {
   font-size: 1.2em;
   margin: 10px 0;
-  Color: $Color1;
+  color: $White;
 }
 
 .invalid {
@@ -50,12 +53,12 @@
   justify-content: space-between;
   padding: 10px 20px;
   margin: 10px 0;
-  border: 1px solid darken($White,20%);
-  box-shadow: 2px 2px darken($White,30%);
+  border: 1px solid darken($Bright,20%);
+  box-shadow: 2px 2px darken($Bright,30%);
 }
 
 .questionHolder:hover {
-  background: lighten($Light,10%);
+  background: $Bright;
 }
 
 .answerHolder {
@@ -66,6 +69,12 @@
   margin: 10px 0;
 }
 
+#non-disclosure {
+
+}
+#nd-image {
+  width: 100%;
+}
 
 .oddQuestion {
   // background: $Light;
@@ -82,7 +91,7 @@
   font-size: 1em;
   font-weight: bold;
   margin: 10px -10px -10px 20px;
-  color: darken($Color1, 25%);
+  color: lighten(#17A2B8,10%);
   white-space: pre-wrap;
   text-align: center;
 }
