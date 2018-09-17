@@ -14,5 +14,9 @@
     "firebase": "^5.4.1",
     "firebase-admin": "^6.0.0",
     "firebaseui": "^3.4.0"
+  },
+  "engines": {
+    "node": "9.8.0",
+    "npm": "5.7.1"
   }
 }
