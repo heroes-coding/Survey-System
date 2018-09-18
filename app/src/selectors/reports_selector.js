@@ -108,7 +108,12 @@ const getFilteredNames = createSelector(
   studentNameSearchTerm,
   (names, fuse, term) => {
     if (!term) return names
-    const results = fuse.search(term).slice(0,15)
+    let results = fuse.search(term).slice(0,15)
+
+    // reverse names by spacing
+    let reversedResults = fuse.search(term.split(" ").reverse().join(" ")).slice(0,15)
+    results = results.concat(reversedResults.filter(x => !results.includes(x)))
+
     const studentNames = []
     results.map(r => studentNames.push(fuse.list[r]))
     return studentNames
