@@ -14,6 +14,7 @@ $Black: #1a1a1a;
 .surveyHolder {
   margin: auto;
   padding: 30px 30px;
+  min-width: 500px;
   border-radius: 2px;
   h5 {
     font-size: 1.4em;
@@ -42,10 +43,14 @@ $Black: #1a1a1a;
 .answerHeader {
   font-size: 1em;
   font-weight: bold;
-  margin: 10px -10px -10px 20px;
+  // margin: 10px -10px -10px 20px;
   color: lighten($Bright,10%);
   white-space: pre-wrap;
   text-align: center;
+}
+
+.answerHeaderTitle {
+  padding: 5px;
 }
 
 .questionHolder:hover {
@@ -64,7 +69,7 @@ $Black: #1a1a1a;
 }
 
 .surveyCategory {
-  margin: 50px 5% 50px 10%;
+  margin: 50px 3% 50px 5%;
 }
 
 .adviceHeader {

@@ -34,7 +34,7 @@ const Category = ({ shuffledQuestionKeys, showAdvice, advice, links, id: categor
       <div className="categoryTitle">{title}</div>
       <div className='answerHolder'>
         <div className="question"></div>
-        {answers.map((answer,i) => <div key={i} className="answerHeader">{answer}</div>)}
+        {answers.map((answer,i) => <div key={i} className="answerHeader"><div className="answerHeaderTitle">{answer}</div></div>)}
       </div>
       {shuffledQuestionKeys.map((id,row) => {
         const q = questions[id]
